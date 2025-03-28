@@ -64,6 +64,7 @@ kotlin {
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
+            implementation(compose.materialIconsExtended)
             implementation(compose.ui)
             // ---- KMP CUSTOM------
             implementation(libs.compose.navigation)
@@ -72,6 +73,8 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
+            api(libs.koin.core)
+            implementation(libs.koin.compose.viewmodel)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
