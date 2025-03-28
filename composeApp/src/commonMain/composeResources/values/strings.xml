@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+    <string name="unknown">Unknown ?</string>
+
+    <!-- Common -->
+    <string name="navigation_drawer">Navigation Drawer</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="close">Close</string>
+    <string name="clear">Clear</string>
+    <string name="delete">Delete</string>
+    <string name="retry">Retry</string>
+    <string name="apply">Apply</string>
+    <string name="back">Back</string>
+    <string name="previous">Previous</string>
+    <string name="next">Next</string>
+    <string name="loading">Loading...</string>
+    <string name="view_detail">View Detail</string>
+    <string name="view_all">View All</string>
+    <string name="announcement">Announcement</string>
+    <string name="filter">Filter</string>
+    <string name="default">Default</string>
+    <string name="default_value">Default</string>
+    <string name="set_as_default">Set as Default</string>
+    <string name="customize">Customize</string>
+    <string name="multiply">Multiply</string>
+    <string name="bangboo_speak">Ehn-ne~ ehn-na</string>
+    <string name="unknown_error">Unknown Error</string>
+    <string name="visible">Visible</string>
+    <string name="invisible">Invisible</string>
+    <string name="under_development">Under Development</string>
+
+    <!-- Sub System -->
+    <string name="home">Home</string>
+    <string name="agents">Agents</string>
+    <string name="all_agents">All Agents</string>
+    <string name="w_engines">W-Engines</string>
+    <string name="all_w_engines">All W-Engines</string>
+    <string name="drives">Drives</string>
+    <string name="all_drives">All Drives</string>
+    <string name="bangboo">Bangboo</string>
+    <string name="all_bangboo">All Bangboo</string>
+    <string name="setting">Setting</string>
+    <string name="wiki">Wiki</string>
+    <string name="function">Tools</string>
+
+    <!-- Attribute -->
+    <string name="ether">Ether</string>
+    <string name="fire">Fire</string>
+    <string name="ice">Ice</string>
+    <string name="electric">Electric</string>
+    <string name="physical">Physical</string>
+
+    <!-- Specialty -->
+    <string name="attack">Attack</string>
+    <string name="stun">Stun</string>
+    <string name="support">Support</string>
+    <string name="anomaly">Anomaly</string>
+    <string name="defense">Defense</string>
+
+    <!-- Attack Type -->
+    <string name="pierce">Pierce</string>
+    <string name="slash">Slash</string>
+    <string name="strike">Strike</string>
+
+    <!-- Faction -->
+    <string name="gentle_house">Gentle House</string>
+    <string name="victoria_housekeeping">Victoria Housekeeping</string>
+    <string name="belobog_heavy_industries">Belobog Heavy Industries</string>
+    <string name="obol_squad">Obol Squad</string>
+    <string name="section_6">Section 6</string>
+    <string name="criminal_investigation_special_response_team">Criminal Investigation Special Response Team</string>
+    <string name="sons_of_calydon">Sons of Calydon</string>
+    <string name="stars_of_lyra">Stars of Lyra</string>
+
+    <!-- Home -->
+    <string name="popular">Popular</string>
+    <string name="forum_popular">Forum Hot</string>
+    <string name="reddit">Reddit</string>
+    <string name="bahamut">Bahamut</string>
+    <string name="ptt">Ptt</string>
+    <string name="nga">NGA</string>
+    <string name="replies">Replies</string>
+
+    <!-- Agent Detail -->
+    <string name="attributes">Attributes</string>
+    <string name="hp">HP</string>
+    <string name="atk">ATK</string>
+    <string name="def">DEF</string>
+    <string name="hp_atk_def">HP / ATK / DEF</string>
+    <string name="materials">Materials</string>
+    <string name="skills">Skills</string>
+    <string name="expand_all">Expand All</string>
+    <string name="basic_attack">Basic Attack</string>
+    <string name="dodge">Dodge</string>
+    <string name="dash_attack">Dash Attack</string>
+    <string name="dodge_counter">Dodge Counter</string>
+    <string name="quick_assist">Quick Assist</string>
+    <string name="defensive_assist">Defensive Assist</string>
+    <string name="assist_follow_up">Assist Follow Up</string>
+    <string name="special_attack">Special Attack</string>
+    <string name="ex_special_attack">Ex Special Attack</string>
+    <string name="chain_attack">Chain Attack</string>
+    <string name="ultimate">Ultimate</string>
+    <string name="core_passive">Core Passive</string>
+    <string name="additional_ability">Additional Ability</string>
+    <string name="mindscape_cinema">Mindscape Cinema</string>
+    <string name="suggest_w_engines">Recommended W-Engines</string>
+    <string name="suggest_drives">Recommended Drives</string>
+    <string name="agent_background">Agent Background</string>
+    <string name="gallery">Gallery</string>
+
+    <!-- W-Engine Detail -->
+    <string name="w_engine_effect">W-Engine Effect</string>
+    <string name="additional_info">Additional Info</string>
+
+    <!-- Bangboo Detail -->
+    <string name="active_skill">Active Skill</string>
+
+    <!-- Drive Detail -->
+    <string name="piece_set">Piece Set %1$d</string>
+    <string name="piece_set_short">%1$d pc</string>
+
+    <!-- Setting -->
+    <string name="language">Language</string>
+    <string name="color_theme">Color Theme</string>
+    <string name="light_theme">Light Theme</string>
+    <string name="dark_theme">Dark Theme</string>
+    <string name="ui_scale">UI Scale</string>
+    <string name="font_scale">Font Scale</string>
+    <string name="ui_scale_warning">Adjust UI and text size.\n\nWarning: Non-default sizes may cause interface layout issues</string>
+    <string name="hoyolab_account">HoYoLab Account</string>
+    <string name="feedback">Feedback</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="open_source">Open Source</string>
+    <string name="coming_soon">Coming Soon</string>
+    <string name="resource_licence">The game images, animations, audio, and original text used on this App are primarily sourced from the Zenless Zone Zero Wiki (Fandom) and are used solely to better present game information. The copyright for these materials belongs to Zenless Zone Zero/miHoYo. Unless otherwise stated, other content is licensed under the Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0) license.</string>
+    <string name="code_licence">The open-source code on GitHub is licensed under the MIT License.</string>
+    <string name="contributors">Contributors</string>
+    <string name="author">Author</string>
+    <string name="developer">Developers</string>
+    <string name="ui_ux_designers">UI/UX Designers</string>
+    <string name="localization">Localization</string>
+    <string name="data_integration">Data Integration</string>
+    <string name="banner_artists">Banner Artists</string>
+    <string name="special_thanks">Special Thanks</string>
+    <string name="restart_hint">An app restart is required to apply the changes.\nWould you like to restart now?</string>
+    <string name="restart">Restart</string>
+    <string name="later">Later</string>
+
+    <!-- Feedback -->
+    <string name="issue_type">Issue Type</string>
+    <string name="please_select">Please Select</string>
+    <string name="crash_or_bug">Crash or Bug</string>
+    <string name="incorrect_content">Incorrect Content</string>
+    <string name="suggestion">Suggestion</string>
+    <string name="other">Other</string>
+    <string name="input_your_issue">Input your issue</string>
+    <string name="your_nickname_optional">Your Nickname (Optional)</string>
+    <string name="app_version">App Version</string>
+    <string name="device_name">Device Name</string>
+    <string name="operating_system">OS</string>
+    <string name="submit_form">Submit</string>
+    <string name="invalid_feedback_form">Unspecified issue type or issue content.</string>
+    <string name="form_submit_success">The form has been submitted. Thank you for your feedback!</string>
+
+    <!-- HoYoLab Sync -->
+    <string name="hoyolab_sync">HoYoLab Sync</string>
+    <string name="sync">Sync</string>
+    <string name="unsync">Unsync</string>
+    <string name="game_server">Game Server</string>
+    <string name="account_not_found">Account Not Found</string>
+    <string name="invalid_hoYoLab_form">Unspecified game server or empty input field.</string>
+    <string name="update_at">%1$s updated</string>
+    <string name="user_profile_image">User Profile Image</string>
+    <string name="hoyolab_sync_announcement">The information submitted on this page is solely used for processing requests in HoYoLab and is encrypted and stored on your device. We do not collect any data.</string>
+    <string name="remove_account_hint">Do you want to disconnect the account?\n(remove its data from this device)</string>
+    <string name="add_account">Add Account</string>
+
+    <!-- HoYoLab Sync Tutorial -->
+    <string name="instruction_guide">Instruction Guide</string>
+    <string name="open_a_desktop_browser">Open a Desktop Browser</string>
+    <string name="navigate_to_zzz_battle_record">Navigate to the Zenless Zone Zero Battle Records.</string>
+    <string name="hoyolab_zzz_game_record">HoYoLab > Zenless Zone Zero > Battle Record.</string>
+    <string name="open_developer_tools">Open Developer Tools</string>
+    <string name="press_f12_to_open_developer_tools_cookies">Press F12 to open Developer Tools > Application > Cookies.</string>
+    <string name="copy_ltoken_ltuid_paste_them_into_the_form">Copy the values of ltoken_v2 and ltuid_v2, then paste them into the form.</string>
+    <string name="frequently_asked_questions">Frequently Asked Questions</string>
+    <string name="unable_to_link">Unable to link or link failed?</string>
+    <string name="please_try_again_using_incognito_mode">Please try again using your browser’s Incognito Mode.</string>
+    <string name="there_are_two_ltoken_values_which_one_should_i_choose">There are two ltoken_v2 values, which one should I choose?</string>
+    <string name="either_one_works">Either one works.</string>
+    <string name="i_still_have_other_questions">I still have other questions!!!</string>
+    <string name="provide_feedback_via_suggestions_or_report_your_issue_on_github">Feel free to provide feedback via Suggestions or report your issue on GitHub.</string>
+    <string name="image_example">Image Example</string>
+
+    <!-- HoYoLab Card -->
+    <string name="engagement_today">Engagement Today</string>
+    <string name="scratch_card">Scratch Card</string>
+    <string name="video_store">Video Store</string>
+    <string name="bounty_commissions">Bounty Commissions</string>
+    <string name="investigate_point">Investigate Point</string>
+    <string name="incomplete">Incomplete</string>
+    <string name="open">Open</string>
+    <string name="check_in">Check In</string>
+    <string name="check_in_success">Check In Success !</string>
+    <string name="ready_to_settle">Ready to Settle</string>
+    <string name="operating">Operating</string>
+    <string name="not_operating">Not Operating</string>
+    <string name="purchasable">Purchasable</string>
+    <string name="purchased">Purchased</string>
+    <string name="ridu_weekly">Ridu Weekly</string>
+
+    <!-- My Agent -->
+    <string name="my_agent">My Agent</string>
+    <string name="w_engine_not_equipped">W-Engine Not Equipped</string>
+    <string name="effective_sub_stats">Effective Sub Stats</string>
+    <string name="hit">Hit %1$d</string>
+    <string name="display_uid">Display UID</string>
+    <string name="custom_image">Custom Image</string>
+    <string name="image_url">Image URL</string>
+    <string name="author_name_optional">Author Name (optional)</string>
+    <string name="zoom_in">Zoom In</string>
+    <string name="zoom_out">Zoom Out</string>
+    <string name="background_blur">Background Blur</string>
+
+</resources>
