@@ -50,11 +50,13 @@ import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.onion.gpt.ui.screen.home.model.ChatMessage
 import org.onion.gpt.ui.screen.home.model.TextModel
+import org.onion.gpt.ui.theme.MediumOutlinedTextField
+import org.onion.gpt.ui.theme.MediumText
 import org.onion.gpt.ui.utils.Animations
 
 @Composable
 fun HomeScreen() {
-    Box(modifier = Modifier.fillMaxSize().background(Color.Blue)) {
+    Box(modifier = Modifier.fillMaxSize()) {
         val chatViewModel = koinViewModel<ChatViewModel>()
         val chatMessages = chatViewModel.currentChatMessages
         var text by remember { mutableStateOf("") }
@@ -189,7 +191,7 @@ fun AskAnythingField(
     onTextChange: (String) -> Unit
 ) {
     Box(modifier) {
-        OutlinedTextField(
+        MediumOutlinedTextField(
             value = text,
             onValueChange = onTextChange,
             modifier = Modifier
@@ -366,10 +368,9 @@ private fun ChatBubbleMessage(
 
 @Composable
 private fun UserMessage(message: String) {
-    Text(
+    MediumText(
         text = message,
         color = MaterialTheme.colorScheme.onSurface,
-        style = MaterialTheme.typography.titleMedium,
         modifier = Modifier.padding(top = 8.dp) // Add top padding to align with the icon
     )
 }
@@ -379,10 +380,9 @@ private fun AiMessage(
     message: String
 ) {
 
-    Text(
+    MediumText(
         text = message,
         color = MaterialTheme.colorScheme.surfaceContainerLow,
-        style = MaterialTheme.typography.titleMedium,
         modifier = Modifier.padding(top = 8.dp)
     )
 }
