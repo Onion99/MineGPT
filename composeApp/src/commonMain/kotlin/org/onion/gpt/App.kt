@@ -18,6 +18,8 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 import minegpt.composeapp.generated.resources.Res
 import minegpt.composeapp.generated.resources.compose_multiplatform
+import org.koin.compose.KoinApplication
+import org.onion.gpt.di.appModule
 import org.onion.gpt.ui.navigation.NavActions
 import org.onion.gpt.ui.navigation.destination.RootDestination
 import org.onion.gpt.ui.screen.home.HomeScreen
@@ -28,23 +30,27 @@ import org.onion.gpt.ui.theme.MediumText
 @Composable
 @Preview
 fun App() {
-    AppTheme {
-        val rootNavController = rememberNavController()
-        val rootNavActions = remember(rootNavController) {
-            NavActions(rootNavController)
-        }
-        NavHost(
-            navController = rootNavController,
-            startDestination = RootDestination.Splash.route
-        ) {
-
-            composable(RootDestination.Splash.route) {
-                SplashScreen(
-                    startHomeScreen = { rootNavActions.popAndNavigation(RootDestination.Home) }
-                )
+    KoinApplication(application = {
+        modules(appModule())
+    }) {
+        AppTheme {
+            val rootNavController = rememberNavController()
+            val rootNavActions = remember(rootNavController) {
+                NavActions(rootNavController)
             }
-            composable(RootDestination.Home.route) {
-                HomeScreen()
+            NavHost(
+                navController = rootNavController,
+                startDestination = RootDestination.Splash.route
+            ) {
+
+                composable(RootDestination.Splash.route) {
+                    SplashScreen(
+                        startHomeScreen = { rootNavActions.popAndNavigation(RootDestination.Home) }
+                    )
+                }
+                composable(RootDestination.Home.route) {
+                    HomeScreen()
+                }
             }
         }
     }

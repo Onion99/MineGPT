@@ -31,14 +31,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
+import minegpt.composeapp.generated.resources.Res
+import minegpt.composeapp.generated.resources.ic_help
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -51,14 +57,35 @@ fun HomeScreen() {
     Box(modifier = Modifier.fillMaxSize().background(Color.Blue)) {
         val chatViewModel = koinViewModel<ChatViewModel>()
         val chatMessages = chatViewModel.currentChatMessages
+        var text by remember { mutableStateOf("") }
+        val keyboardController = LocalSoftwareKeyboardController.current
+        val focusManager = LocalFocusManager.current
+        var attachButtonClicked by remember { mutableStateOf(false) }
+        ChatMessagesList(chatMessages = chatMessages)
+        AskAnythingField(
+            modifier = Modifier.align(Alignment.BottomStart),
+            onAttachClick = { attachButtonClicked = true },
+            onSendClick = {
+                if (chatViewModel.isGenerating.value) {
+                    chatViewModel.stopGeneration()
+                } else {
+                    if (text.isNotEmpty()) {
+                        chatViewModel.sendMessage(text)
+                        text = ""
+                        keyboardController?.hide()
+                        focusManager.clearFocus()
+                    }
+                }
+            },
+            text = text,
+            onTextChange = { text = it },
+            isGenerating = chatViewModel.isGenerating.value
+        )
     }
 }
 
 @Composable
-private fun ChatMessagesList(
-    chatMessages: List<ChatMessage>,
-    selectedTextModel: TextModel,
-) {
+private fun ChatMessagesList(chatMessages: List<ChatMessage>) {
     val lazyListState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
 
@@ -85,7 +112,7 @@ private fun ChatMessagesList(
                 ChatBubble(
                     message = message.message,
                     isUser = message.isUser,
-                    aiIcon = selectedTextModel.image
+                    aiIcon = Res.drawable.ic_help
                 )
             }
         }
