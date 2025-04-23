@@ -200,7 +200,7 @@ fun AskAnythingField(
                 .padding(start = 16.dp, end = 8.dp, top = 16.dp, bottom = 16.dp),
             shape = MaterialTheme.shapes.extraLarge,
             placeholder = {
-                Text(
+                MediumText(
                     text = "Ask anything",
                     color = MaterialTheme.colorScheme.onBackground
                 )
