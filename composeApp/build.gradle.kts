@@ -118,6 +118,13 @@ compose.desktop {
     application {
         mainClass = "org.onion.gpt.MainKt"
 
+        // 为调试运行提供工作目录与库目录
+        val taskName = project.gradle.startParameter.taskNames.firstOrNull() ?: ""
+        if (taskName.contains("desktopRun")) {
+            jvmArgs += "-Duser.dir=${rootProject.extra["desktopCurrentDir"]}"
+            jvmArgs += "-Djava.library.path=${rootProject.extra["cppLibsDir"]}"
+        }
+
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "org.onion.gpt"
