@@ -23,6 +23,41 @@ include_directories(${JAVA_INCLUDE_DIR} ${JAVA_INCLUDE_DIR2})
 set(LLAMA_DIR "../llama.cpp")
 set(GGML_DIR ${LLAMA_DIR}/ggml)
 set(COMMON_DIR ${LLAMA_DIR}/common)
+
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../../.git")
+    set(GIT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../.git")
+    # Is git submodule
+    if(NOT IS_DIRECTORY "${GIT_DIR}")
+        file(READ ${GIT_DIR} REAL_GIT_DIR_LINK)
+        string(REGEX REPLACE "gitdir: (.*)\n$" "\\1" REAL_GIT_DIR ${REAL_GIT_DIR_LINK})
+        string(FIND "${REAL_GIT_DIR}" "/" SLASH_POS)
+        if (SLASH_POS EQUAL 0)
+            set(GIT_DIR "${REAL_GIT_DIR}")
+        else()
+            set(GIT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../${REAL_GIT_DIR}")
+        endif()
+    endif()
+    if(EXISTS "${GIT_DIR}/index")
+        set(GIT_INDEX "${GIT_DIR}/index")
+    else()
+        message(WARNING "Git index not found in git repository.")
+        set(GIT_INDEX "")
+    endif()
+else()
+    message(WARNING "Git repository not found; to enable automatic generation of build info, make sure Git is installed and the project is a Git repository.")
+    set(GIT_INDEX "")
+endif()
+# Add a custom command to rebuild build-info.cpp when .git/index changes
+add_custom_command(
+        OUTPUT "${PARENT_DIR}/llama.cpp/common/build-info.cpp"
+        COMMENT "Generating build details from Git"
+        COMMAND ${CMAKE_COMMAND} -DMSVC=${MSVC} -DCMAKE_C_COMPILER_VERSION=${CMAKE_C_COMPILER_VERSION}
+        -DCMAKE_C_COMPILER_ID=${CMAKE_C_COMPILER_ID} -DCMAKE_VS_PLATFORM_NAME=${CMAKE_VS_PLATFORM_NAME}
+        -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -P "${PARENT_DIR}/llama.cpp/common/cmake/build-info-gen-cpp-v2.cmake"
+        WORKING_DIRECTORY "${COMMON_DIR}/.."
+        DEPENDS "${COMMON_DIR}/build-info.cpp.in" ${GIT_INDEX}
+        VERBATIM
+)
 set(SMOLLM_SOURCES
         ${GGML_DIR}/src/ggml.c
         ${GGML_DIR}/src/ggml-alloc.c
