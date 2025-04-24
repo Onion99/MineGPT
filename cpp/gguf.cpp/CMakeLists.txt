@@ -57,6 +57,8 @@ set(SMOLLM_SOURCES
         ${LLAMA_DIR}/src/unicode.h
         ${LLAMA_DIR}/src/unicode.cpp
         ${LLAMA_DIR}/src/unicode-data.cpp
+        ${LLAMA_DIR}/src/llama-io.h
+        ${LLAMA_DIR}/src/llama-io.cpp
 
         ${COMMON_DIR}/arg.cpp
         ${COMMON_DIR}/base64.hpp
@@ -67,6 +69,8 @@ set(SMOLLM_SOURCES
         ${COMMON_DIR}/log.cpp
         ${COMMON_DIR}/ngram-cache.cpp
         ${COMMON_DIR}/sampling.cpp
+        ${COMMON_DIR}/chat.cpp
+        ${COMMON_DIR}/chat.h
 
         LLMInference.cpp
         smollm.cpp
