@@ -62,6 +62,7 @@ set(SMOLLM_SOURCES
 
         ${COMMON_DIR}/arg.cpp
         ${COMMON_DIR}/base64.hpp
+        ${COMMON_DIR}/build-info.cpp
         ${COMMON_DIR}/common.cpp
         ${COMMON_DIR}/console.cpp
         ${COMMON_DIR}/json-schema-to-grammar.cpp
