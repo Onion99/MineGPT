@@ -125,11 +125,14 @@ function(build_library target_name)
             PUBLIC
             -ffunction-sections -fdata-sections
     )
-
-    target_link_libraries(
-            ${target_name}
-            android log
-    )
+    # 只在 Android 平台链接这个库
+    if (ANDROID)
+        target_link_libraries(${target_name} android log)
+    endif()
+    #或者更通用
+    #[[if(CMAKE_SYSTEM_NAME STREQUAL "Android")
+        target_link_libraries(${target_name} android log)
+    endif()]]
     # -Wl,--gc-sections: remove unused sections (garbage collection)
     # -flto: link-time optimization
     # -Wl,--exclude-libs,ALL: exclude all libraries
