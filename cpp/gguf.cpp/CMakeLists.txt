@@ -1,6 +1,24 @@
 cmake_minimum_required(VERSION 3.22.1)
 project("smollm")
 
+# 获取当前路径的上一级目录
+get_filename_component(PARENT_DIR "${CMAKE_CURRENT_SOURCE_DIR}" DIRECTORY)
+# 最终确定项目输出动态链接库的目录,我这里是D:\Coding\Happy\MineGPT\cpp\libs
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PARENT_DIR}/libs") # .exe and .dll
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PARENT_DIR}/libs") # .so and .dylib
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PARENT_DIR}/libs") # .lib and .a
+message(STATUS "最终生成目录: ${GRANDPARENT_DIR}")
+
+# 兼容Android平台的找到 JDK 安装目录（你也可以写死路径）
+if(NOT DEFINED ENV{JAVA_HOME})
+    message(FATAL_ERROR "Please set JAVA_HOME environment variable.")
+endif()
+
+set(JAVA_INCLUDE_DIR "$ENV{JAVA_HOME}/include")
+set(JAVA_INCLUDE_DIR2 "$ENV{JAVA_HOME}/include/win32")  # Windows平台需要包含这个额外目录
+
+include_directories(${JAVA_INCLUDE_DIR} ${JAVA_INCLUDE_DIR2})
+
 set(LLAMA_DIR "../llama.cpp")
 set(GGML_DIR ${LLAMA_DIR}/ggml)
 set(COMMON_DIR ${LLAMA_DIR}/common)
@@ -151,10 +169,10 @@ function(build_library_universal target_name)
 endfunction()
 
 build_library_universal("smollm")
-if (${ANDROID_ABI} STREQUAL "armeabi-v7a")
+if ("${ANDROID_ABI}" STREQUAL "armeabi-v7a")
     build_library_armv7a("smollm_v7a" "-march=armv7-a" "-mfpu=neon-vfpv4" "-mfloat-abi=softfp")
 endif()
-if (${ANDROID_ABI} STREQUAL "arm64-v8a")
+if ("${ANDROID_ABI}" STREQUAL "arm64-v8a")
     build_library_arm64("smollm_v8" "-march=armv8-a")
     # Targets for Arm-v8.2a
     build_library_arm64("smollm_v8_2_fp16" "-march=armv8.2-a+fp16")
