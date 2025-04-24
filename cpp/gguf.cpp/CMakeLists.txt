@@ -9,7 +9,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PARENT_DIR}/libs") # .so and .dylib
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PARENT_DIR}/libs") # .lib and .a
 message(STATUS "最终生成目录: ${GRANDPARENT_DIR}")
 
-# 兼容Android平台的找到 JDK 安装目录（你也可以写死路径）
+# 兼容Android平台 include<jni.h> ,需找到 JDK 安装目录（你也可以写死路径）
 if(NOT DEFINED ENV{JAVA_HOME})
     message(FATAL_ERROR "Please set JAVA_HOME environment variable.")
 endif()
@@ -19,6 +19,7 @@ set(JAVA_INCLUDE_DIR2 "$ENV{JAVA_HOME}/include/win32")  # Windows平台需要包
 
 include_directories(${JAVA_INCLUDE_DIR} ${JAVA_INCLUDE_DIR2})
 
+# Build
 set(LLAMA_DIR "../llama.cpp")
 set(GGML_DIR ${LLAMA_DIR}/ggml)
 set(COMMON_DIR ${LLAMA_DIR}/common)

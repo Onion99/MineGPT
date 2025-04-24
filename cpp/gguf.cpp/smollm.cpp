@@ -1,5 +1,6 @@
 #include "LLMInference.h"
 #include <jni.h>
+#include <stdexcept>
 
 extern "C" JNIEXPORT jlong JNICALL
 Java_io_shubham0204_smollm_SmolLM_loadModel(JNIEnv* env, jobject thiz, jstring modelPath, jfloat minP,

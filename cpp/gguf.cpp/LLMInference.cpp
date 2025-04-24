@@ -1,28 +1,13 @@
 #include "LLMInference.h"
 #include "common.h"
 #include "gguf.h"
-#include <android/log.h>
 #include <cstring>
 #include <iostream>
 
 #define TAG "[SmolLMAndroid-Cpp]"
-#define LOGi(...) __android_log_print(ANDROID_LOG_INFO, TAG, __VA_ARGS__)
-#define LOGe(...) __android_log_print(ANDROID_LOG_ERROR, TAG, __VA_ARGS__)
-
 void
 LLMInference::loadModel(const char* model_path, float minP, float temperature, bool storeChats, long contextSize,
                         const char* chatTemplate, int nThreads, bool useMmap, bool useMlock) {
-    LOGi("loading model with"
-         "\n\tmodel_path = %s"
-         "\n\tminP = %f"
-         "\n\ttemperature = %f"
-         "\n\tstoreChats = %d"
-         "\n\tcontextSize = %li"
-         "\n\tchatTemplate = %s"
-         "\n\tnThreads = %d"
-         "\n\tuseMmap = %d"
-         "\n\tuseMlock = %d",
-         model_path, minP, temperature, storeChats, contextSize, chatTemplate, nThreads, useMmap, useMlock);
 
     // create an instance of llama_model
     llama_model_params model_params = llama_model_default_params();
@@ -31,7 +16,6 @@ LLMInference::loadModel(const char* model_path, float minP, float temperature, b
     _model                          = llama_model_load_from_file(model_path, model_params);
 
     if (!_model) {
-        LOGe("failed to load model from %s", model_path);
         throw std::runtime_error("loadModel() failed");
     }
 
@@ -43,7 +27,6 @@ LLMInference::loadModel(const char* model_path, float minP, float temperature, b
     _ctx                            = llama_init_from_model(_model, ctx_params);
 
     if (!_ctx) {
-        LOGe("llama_new_context_with_model() returned null)");
         throw std::runtime_error("llama_new_context_with_model() returned null");
     }
 
@@ -170,7 +153,6 @@ LLMInference::completionLoop() {
         return "[EOG]";
     }
     std::string piece = common_token_to_piece(_ctx, _currToken, true);
-    LOGi("common_token_to_piece: %s", piece.c_str());
     auto end = ggml_time_us();
     _responseGenerationTime += (end - start);
     _responseNumTokens += 1;
@@ -206,7 +188,6 @@ LLMInference::stopCompletion() {
 }
 
 LLMInference::~LLMInference() {
-    LOGi("deallocating LLMInference instance");
     // free memory held by the message text in messages
     // (as we had used strdup() to create a malloc'ed copy)
     for (llama_chat_message& message : _messages) {
