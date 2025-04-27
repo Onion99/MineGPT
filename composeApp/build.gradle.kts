@@ -118,7 +118,7 @@ compose.desktop {
     application {
         mainClass = "org.onion.gpt.MainKt"
 
-        // 为调试运行提供工作目录与库目录
+        // 为 desktopRunDebug 调试运行提供工作目录与库目录
         val taskName = project.gradle.startParameter.taskNames.firstOrNull() ?: ""
         if (taskName.contains("desktopRun")) {
             jvmArgs += "-Duser.dir=${rootProject.extra["desktopCurrentDir"]}"
@@ -130,5 +130,12 @@ compose.desktop {
             packageName = "org.onion.gpt"
             packageVersion = "1.0.0"
         }
+    }
+}
+afterEvaluate {
+    val run = tasks.named("run")
+    // 运行 桌面程序 Debug
+    val desktopRunDebug by tasks.registering {
+        dependsOn(run)
     }
 }

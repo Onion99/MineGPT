@@ -1,6 +1,6 @@
 package org.onion.gpt.llm
 
-expect class LLMTalker {
+expect class LLMTalker() {
     fun create(modelPath: String, minP: Float, temperature: Float,
                storeChats: Boolean, contextSize: Long, chatTemplate: String,
                nThreads: Int, useMmap: Boolean, useMlock: Boolean, ): Boolean

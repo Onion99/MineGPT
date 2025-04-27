@@ -1,6 +1,9 @@
 package org.onion.gpt.llm
 
 actual class LLMTalker {
+    init {
+        System.loadLibrary("libsmollm")
+    }
     actual fun create(
         modelPath: String,
         minP: Float,

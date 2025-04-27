@@ -63,6 +63,10 @@ fun HomeScreen() {
         val keyboardController = LocalSoftwareKeyboardController.current
         val focusManager = LocalFocusManager.current
         var attachButtonClicked by remember { mutableStateOf(false) }
+        val coroutineScope = rememberCoroutineScope()
+        coroutineScope.launch {
+            chatViewModel.initLLM()
+        }
         ChatMessagesList(chatMessages = chatMessages)
         AskAnythingField(
             modifier = Modifier.align(Alignment.BottomStart),

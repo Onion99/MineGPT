@@ -7,10 +7,31 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.onion.gpt.llm.LLMReader
+import org.onion.gpt.llm.LLMTalker
 import org.onion.gpt.ui.screen.home.model.ChatMessage
 import org.onion.gpt.ui.screen.home.model.generateLongResponse
 
 class ChatViewModel  : ViewModel() {
+
+
+    fun initLLM(){
+        val modelPath = "D:\\models\\llama2-7b-chat.gguf"
+        val minP = 0.05f
+        val temperature = 1.0f
+        val systemPrompt = "You are a helpful assistant"
+        // ---- read chatTemplate and contextSize ------
+        val llmReader = LLMReader()
+        llmReader.loadModel(modelPath)
+        val contextSize = llmReader.getContextSize()
+        val chatTemplate = llmReader.getChatTemplate()
+        val llmTalker = LLMTalker()
+        llmTalker.create(modelPath,minP,temperature,true,contextSize!!,chatTemplate!!,4,true,
+            useMlock = false
+        )
+        llmTalker.addSystemPrompt(systemPrompt)
+    }
+
     // ========================================================================================
     //                              Chat Message State
     // ========================================================================================
