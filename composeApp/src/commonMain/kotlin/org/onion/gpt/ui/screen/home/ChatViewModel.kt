@@ -5,32 +5,75 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.onion.gpt.llm.LLMReader
 import org.onion.gpt.llm.LLMTalker
 import org.onion.gpt.ui.screen.home.model.ChatMessage
-import org.onion.gpt.ui.screen.home.model.generateLongResponse
+import kotlin.time.measureTime
 
 class ChatViewModel  : ViewModel() {
 
+    private lateinit var llmReader:LLMReader
+    private lateinit var llmTalker:LLMTalker
 
+    private var initLLM = false
     fun initLLM(){
+        if(initLLM) return
+        initLLM = true
         val modelPath = "D:\\models\\llama2-7b-chat.gguf"
         val minP = 0.05f
         val temperature = 1.0f
         val systemPrompt = "You are a helpful assistant"
-        // ---- read chatTemplate and contextSize ------
-        val llmReader = LLMReader()
-        llmReader.loadModel(modelPath)
-        val contextSize = llmReader.getContextSize()
-        val chatTemplate = llmReader.getChatTemplate()
-        val llmTalker = LLMTalker()
-        llmTalker.create(modelPath,minP,temperature,true,contextSize!!,chatTemplate!!,4,true,
-            useMlock = false
-        )
-        llmTalker.addSystemPrompt(systemPrompt)
+        viewModelScope.launch(Dispatchers.Default) {
+            // ---- read chatTemplate and contextSize ------
+            llmReader = LLMReader()
+            llmReader.loadModel(modelPath)
+            val contextSize = llmReader.getContextSize()
+            val chatTemplate = llmReader.getChatTemplate()
+            llmTalker = LLMTalker()
+            llmTalker.create(modelPath,minP,temperature,true,contextSize!!,chatTemplate!!,4,true,
+                useMlock = false
+            )
+            llmTalker.addSystemPrompt(systemPrompt)
+        }
     }
+
+    private var responseGenerationJob: Job? = null
+    private var isInferenceOn: Boolean = false
+    fun getTalkerResponse(query: String, onCancelled: () -> Unit, onError: (Throwable) -> Unit){
+        runCatching {
+            responseGenerationJob = viewModelScope.launch(Dispatchers.Default) {
+                isInferenceOn = true
+                val responseContent = StringBuilder()
+                val duration = measureTime {
+                    llmTalker.getResponse(query).collect { newContent ->
+                        responseContent.append(newContent)
+                        generateResponseIncrementally(newContent,responseContent.toString())
+                    }
+                }
+                isGenerating.value = false
+            }
+        }.getOrElse { exception ->
+            isInferenceOn = false
+            if(exception is CancellationException){
+                onCancelled()
+            }else onError(exception)
+        }
+    }
+    private suspend fun generateResponseIncrementally(appendContent: String,responseContent: String) {
+        for (i in appendContent.indices) {
+            if (!isGenerating.value) break
+            _currentChatMessages[_currentChatMessages.lastIndex] = ChatMessage(responseContent.take(responseContent.length - (appendContent.length - i)), false)
+            delay(5)
+        }
+        isInferenceOn = false
+    }
+
 
     // ========================================================================================
     //                              Chat Message State
@@ -40,60 +83,25 @@ class ChatViewModel  : ViewModel() {
     private val _currentChatMessages = mutableStateListOf<ChatMessage>()
     val currentChatMessages: SnapshotStateList<ChatMessage> = _currentChatMessages
 
-
     /** Flag indicating if response generation is in progress */
     val isGenerating = mutableStateOf(false)
-
 
     // region Message Handling & Generation
     // ========================================================================================
     //                          Public Message Methods
     // ========================================================================================
-
-    /**
-     * Adds a new message to the chat and initiates AI response
-     * @param message The text message content
-     * @param isUser Flag indicating if the message is from the user
-     */
     fun sendMessage(message: String, isUser: Boolean = true) {
-        if (isGenerating.value) stopGeneration()
-        _currentChatMessages.add(ChatMessage(message, isUser))
-        if (isUser) initiateResponseGeneration()
-    }
-
-
-    // ========================================================================================
-    //                          Private Generation Methods
-    // ========================================================================================
-    /** Full response being generated (simulated) */
-    private var fullResponse: String = ""
-    private fun initiateResponseGeneration() {
-        fullResponse = generateLongResponse()
-        _currentChatMessages.add(ChatMessage("", false))
-        isGenerating.value = true
-
         viewModelScope.launch {
-            try {
-                generateResponseIncrementally(_currentChatMessages.lastIndex)
-            } finally {
-                resetGenerationState()
-            }
+            if(isGenerating.value) stopGeneration()
+            if(message.isBlank()) return@launch
+            _currentChatMessages.add(ChatMessage(message, isUser))
+            _currentChatMessages.add(ChatMessage("", false))
+            isGenerating.value = true
+            getTalkerResponse(message,{},{})
         }
-    }
-    private suspend fun generateResponseIncrementally(aiMessageIndex: Int) {
-        for (i in fullResponse.indices) {
-            if (!isGenerating.value) break
-            _currentChatMessages[aiMessageIndex] = ChatMessage(fullResponse.take(i + 1), false)
-            delay(5)
-        }
-    }
-    private fun resetGenerationState() {
-        isGenerating.value = false
+
     }
 
-    /**
-     * Stops ongoing response generation
-     */
     fun stopGeneration() {
         isGenerating.value = false
     }

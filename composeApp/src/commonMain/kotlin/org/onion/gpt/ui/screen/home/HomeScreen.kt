@@ -49,7 +49,6 @@ import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.onion.gpt.ui.screen.home.model.ChatMessage
-import org.onion.gpt.ui.screen.home.model.TextModel
 import org.onion.gpt.ui.theme.MediumOutlinedTextField
 import org.onion.gpt.ui.theme.MediumText
 import org.onion.gpt.ui.utils.Animations
