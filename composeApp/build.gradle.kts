@@ -9,6 +9,8 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    // ---- compose desktop hot reload -> https://github.com/JetBrains/compose-hot-reload ------
+    //id("org.jetbrains.compose.hot-reload") version "1.0.0-alpha08"
 }
 
 kotlin {
