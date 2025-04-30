@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -49,8 +50,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
-import com.dokar.sonner.ToastType
-import com.dokar.sonner.rememberToasterState
 import kotlinx.coroutines.launch
 import minegpt.composeapp.generated.resources.Res
 import minegpt.composeapp.generated.resources.ic_help
@@ -66,7 +65,11 @@ import org.onion.gpt.ui.utils.Animations
 
 @Composable
 fun HomeScreen() {
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
         val chatViewModel = koinViewModel<ChatViewModel>()
         val chatMessages = chatViewModel.currentChatMessages
         var text by remember { mutableStateOf("") }
@@ -74,6 +77,7 @@ fun HomeScreen() {
         val focusManager = LocalFocusManager.current
         val snackbarHostState = remember { SnackbarHostState() }
         val coroutineScope = rememberCoroutineScope()
+
         coroutineScope.launch {
             chatViewModel.initLLM()
         }
@@ -101,14 +105,25 @@ fun HomeScreen() {
             onTextChange = { text = it },
             isGenerating = chatViewModel.isGenerating.value
         )
-        // 手动放置 Snackbar Host 到任意位置
-        SnackbarHost(hostState = snackbarHostState,
-            modifier = Modifier.wrapContentSize().align(Alignment.BottomCenter).padding(bottom = 16.dp),
-            snackbar = { snackbarData -> Snackbar(snackbarData, modifier = Modifier
-                .widthIn(min = 100.dp, max = 300.dp) // 控制宽度范围
-                .heightIn(min = 40.dp, max = 120.dp) // 控制高度范围
-                .padding(8.dp),
-                shape = RoundedCornerShape(26.dp))
+
+        // Snackbar Host
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier
+                .wrapContentSize()
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 100.dp),
+            snackbar = { snackbarData ->
+                Snackbar(
+                    snackbarData,
+                    modifier = Modifier
+                        .widthIn(min = 100.dp, max = 300.dp)
+                        .heightIn(min = 40.dp, max = 120.dp)
+                        .padding(8.dp),
+                    shape = RoundedCornerShape(26.dp),
+                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                )
             }
         )
     }
@@ -136,13 +151,25 @@ private fun ChatMessagesList(chatMessages: List<ChatMessage>) {
             state = lazyListState,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 70.dp, bottom = 80.dp)
+                .padding(top = 70.dp, bottom = 90.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(chatMessages) { message ->
-                ChatBubble(
-                    message = message.message,
-                    isUser = message.isUser
-                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            start = if (message.isUser) 64.dp else 16.dp,
+                            end = if (message.isUser) 16.dp else 64.dp,
+                            top = 4.dp,
+                            bottom = 4.dp
+                        )
+                ) {
+                    ChatBubble(
+                        message = message.message,
+                        isUser = message.isUser
+                    )
+                }
             }
         }
 
@@ -155,7 +182,7 @@ private fun ChatMessagesList(chatMessages: List<ChatMessage>) {
             visibility = showScrollButton,
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(bottom = 100.dp, end = 8.dp)
+                .padding(bottom = 100.dp, end = 16.dp)
         )
     }
 
@@ -194,15 +221,17 @@ private fun ScrollToBottomButton(
             onClick = onClick,
             modifier = Modifier
                 .background(
-                    color = MaterialTheme.colorScheme.primary,
+                    color = MaterialTheme.colorScheme.primaryContainer,
                     shape = CircleShape
                 )
-                .shadow(4.dp)
+                .shadow(6.dp, CircleShape)
+                .size(48.dp)
         ) {
             Icon(
                 imageVector = Icons.Filled.KeyboardDoubleArrowDown,
-                contentDescription = "Scroll to bottom",
-                tint = MaterialTheme.colorScheme.onPrimary
+                contentDescription = "滚动到底部",
+                tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                modifier = Modifier.size(24.dp)
             )
         }
     }
@@ -217,19 +246,31 @@ fun AskAnythingField(
     onSendClick: () -> Unit,
     onTextChange: (String) -> Unit
 ) {
-    Box(modifier) {
+    Box(
+        modifier = modifier
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .shadow(
+                elevation = 8.dp,
+                shape = MaterialTheme.shapes.extraLarge,
+                spotColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+            )
+            .background(
+                color = MaterialTheme.colorScheme.surface,
+                shape = MaterialTheme.shapes.extraLarge
+            )
+    ) {
         MediumOutlinedTextField(
             value = text,
             onValueChange = onTextChange,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(end = 56.dp)
-                .padding(start = 16.dp, end = 8.dp, top = 16.dp, bottom = 16.dp),
+                .padding(horizontal = 8.dp, vertical = 4.dp),
             shape = MaterialTheme.shapes.extraLarge,
             placeholder = {
                 MediumText(
-                    text = "Ask anything",
-                    color = MaterialTheme.colorScheme.onBackground
+                    text = "有什么可以帮您？",
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                 )
             },
             leadingIcon = {
@@ -243,19 +284,24 @@ fun AskAnythingField(
                     )
                 }
             },
-            singleLine = true
+            singleLine = true,
+            colors = OutlinedTextFieldDefaults.colors(
+                unfocusedBorderColor = Color.Transparent,
+                focusedBorderColor = Color.Transparent
+            )
         )
 
         SendStopButton(
             isGenerating = isGenerating,
             modifier = Modifier
-                .padding(end = 16.dp)
+                .padding(end = 12.dp)
                 .size(40.dp)
                 .align(Alignment.CenterEnd),
             onClick = onSendClick,
         )
     }
 }
+
 @Composable
 private fun AttachIcon(
     onAttachClick: () -> Unit
@@ -284,6 +330,7 @@ private fun ClearIcon(
         }
     }
 }
+
 @Composable
 fun SendStopButton(
     isGenerating: Boolean,
@@ -293,12 +340,16 @@ fun SendStopButton(
     IconButton(
         onClick = onClick,
         modifier = modifier
-
+            .background(
+                color = MaterialTheme.colorScheme.primary,
+                shape = CircleShape
+            )
     ) {
         Icon(
             imageVector = if (isGenerating) Icons.Filled.Stop
             else Icons.AutoMirrored.Filled.Send,
-            contentDescription = if (isGenerating) "Stop generation" else "Send message",
+            contentDescription = if (isGenerating) "停止生成" else "发送消息",
+            tint = MaterialTheme.colorScheme.onPrimary,
             modifier = Modifier.size(20.dp)
         )
     }
@@ -312,20 +363,25 @@ fun ChatBubble(
     Box(
         modifier = Modifier.fillMaxWidth()
     ) {
-
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(
-                    color = if (isUser) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.onBackground.copy(
-                        alpha = 0.5f
-                    ),
+                    color = if (isUser)
+                        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.7f)
+                    else
+                        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f),
+                    shape = RoundedCornerShape(
+                        topStart = if (isUser) 16.dp else 2.dp,
+                        topEnd = if (isUser) 2.dp else 16.dp,
+                        bottomStart = 16.dp,
+                        bottomEnd = 16.dp
+                    )
                 )
                 .padding(16.dp),
             verticalAlignment = Alignment.Top,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-
             ChatBubbleIcon(isUser = isUser)
 
             ChatBubbleMessage(
@@ -347,20 +403,40 @@ private fun ChatBubbleIcon(isUser: Boolean) {
 
 @Composable
 private fun UserIcon() {
-    Image(
-        painter = painterResource(Res.drawable.ic_avatar_user),
-        contentDescription = "User Avatar Icon",
-        modifier = Modifier.size(30.dp)
-    )
+    Box(
+        modifier = Modifier
+            .size(36.dp)
+            .background(
+                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
+                shape = CircleShape
+            )
+            .padding(6.dp)
+    ) {
+        Image(
+            painter = painterResource(Res.drawable.ic_avatar_user),
+            contentDescription = "用户头像",
+            modifier = Modifier.size(24.dp)
+        )
+    }
 }
 
 @Composable
 private fun AiProviderIcon() {
-    Image(
-        painter = painterResource(Res.drawable.ic_avatar_sytem),
-        contentDescription = "AI Avatar Icon",
-        modifier = Modifier.size(30.dp)
-    )
+    Box(
+        modifier = Modifier
+            .size(36.dp)
+            .background(
+                color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.2f),
+                shape = CircleShape
+            )
+            .padding(6.dp)
+    ) {
+        Image(
+            painter = painterResource(Res.drawable.ic_avatar_sytem),
+            contentDescription = "AI头像",
+            modifier = Modifier.size(24.dp)
+        )
+    }
 }
 
 @Composable
@@ -379,8 +455,10 @@ private fun ChatBubbleMessage(
 private fun UserMessage(message: String) {
     MediumText(
         text = message,
-        color = MaterialTheme.colorScheme.onSurface,
-        modifier = Modifier.padding(top = 8.dp) // Add top padding to align with the icon
+        color = MaterialTheme.colorScheme.onPrimaryContainer,
+        modifier = Modifier
+            .padding(top = 4.dp, end = 8.dp)
+            .fillMaxWidth()
     )
 }
 
@@ -388,10 +466,11 @@ private fun UserMessage(message: String) {
 private fun AiMessage(
     message: String
 ) {
-
     MediumText(
         text = message,
-        color = MaterialTheme.colorScheme.surfaceContainerLow,
-        modifier = Modifier.padding(top = 8.dp)
+        color = MaterialTheme.colorScheme.onSurface,
+        modifier = Modifier
+            .padding(top = 4.dp, end = 8.dp)
+            .fillMaxWidth()
     )
 }
