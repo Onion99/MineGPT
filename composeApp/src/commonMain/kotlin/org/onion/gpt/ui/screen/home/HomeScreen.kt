@@ -45,6 +45,8 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import minegpt.composeapp.generated.resources.Res
 import minegpt.composeapp.generated.resources.ic_help
+import minegpt.composeapp.generated.resources.ic_avatar_sytem
+import minegpt.composeapp.generated.resources.ic_avatar_user
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -116,8 +118,7 @@ private fun ChatMessagesList(chatMessages: List<ChatMessage>) {
             items(chatMessages) { message ->
                 ChatBubble(
                     message = message.message,
-                    isUser = message.isUser,
-                    aiIcon = Res.drawable.ic_help
+                    isUser = message.isUser
                 )
             }
         }
@@ -283,8 +284,7 @@ fun SendStopButton(
 @Composable
 fun ChatBubble(
     message: String,
-    isUser: Boolean,
-    aiIcon: DrawableResource
+    isUser: Boolean
 ) {
     Box(
         modifier = Modifier.fillMaxWidth()
@@ -303,8 +303,7 @@ fun ChatBubble(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
 
-            ChatBubbleIcon(isUser = isUser, aiIcon = aiIcon)
-
+            ChatBubbleIcon(isUser = isUser)
 
             ChatBubbleMessage(
                 message = message,
@@ -315,42 +314,28 @@ fun ChatBubble(
 }
 
 @Composable
-private fun ChatBubbleIcon(
-    isUser: Boolean,
-    aiIcon: DrawableResource
-) {
+private fun ChatBubbleIcon(isUser: Boolean) {
     if (isUser) {
         UserIcon()
     } else {
-        AiProviderIcon(aiIcon = aiIcon)
+        AiProviderIcon()
     }
 }
 
 @Composable
 private fun UserIcon() {
-    Box(
-        modifier = Modifier
-            .size(40.dp)
-            .background(
-                MaterialTheme.colorScheme.background,
-                CircleShape
-            ) // Background for the icon
-            .padding(8.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Icon(
-            imageVector = Icons.Default.Person,
-            contentDescription = "User Icon",
-            tint = MaterialTheme.colorScheme.onSurface
-        )
-    }
+    Image(
+        painter = painterResource(Res.drawable.ic_avatar_user),
+        contentDescription = "User Avatar Icon",
+        modifier = Modifier.size(30.dp)
+    )
 }
 
 @Composable
-private fun AiProviderIcon(aiIcon: DrawableResource) {
+private fun AiProviderIcon() {
     Image(
-        painter = painterResource(aiIcon),
-        contentDescription = "AI Icon",
+        painter = painterResource(Res.drawable.ic_avatar_sytem),
+        contentDescription = "AI Avatar Icon",
         modifier = Modifier.size(30.dp)
     )
 }
@@ -363,9 +348,7 @@ private fun ChatBubbleMessage(
     if (isUser) {
         UserMessage(message = message)
     } else {
-        AiMessage(
-            message = message
-        )
+        AiMessage(message = message)
     }
 }
 

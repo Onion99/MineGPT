@@ -43,7 +43,7 @@ class ChatViewModel  : ViewModel() {
         //  mlock 可以将模型数据锁定在 RAM 中，防止被交换到硬盘，这可以进一步提高推理速度。但也可能导致内存使用过高ck
         // ------------------------------------------------------------------------
         val useMlock = true
-        val systemPrompt = "你是一个优秀的中英翻译大师"
+        val systemPrompt = "You are a helpful assistant"
         viewModelScope.launch(Dispatchers.Default) {
             // ---- read chatTemplate and contextSize ------
             llmReader = LLMReader()
