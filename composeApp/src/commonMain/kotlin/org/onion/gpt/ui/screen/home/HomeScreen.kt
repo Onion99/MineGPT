@@ -8,12 +8,16 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.AttachFile
@@ -26,6 +30,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -42,6 +49,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
+import com.dokar.sonner.ToastType
+import com.dokar.sonner.rememberToasterState
 import kotlinx.coroutines.launch
 import minegpt.composeapp.generated.resources.Res
 import minegpt.composeapp.generated.resources.ic_help
@@ -63,7 +72,7 @@ fun HomeScreen() {
         var text by remember { mutableStateOf("") }
         val keyboardController = LocalSoftwareKeyboardController.current
         val focusManager = LocalFocusManager.current
-        var attachButtonClicked by remember { mutableStateOf(false) }
+        val snackbarHostState = remember { SnackbarHostState() }
         val coroutineScope = rememberCoroutineScope()
         coroutineScope.launch {
             chatViewModel.initLLM()
@@ -71,7 +80,11 @@ fun HomeScreen() {
         ChatMessagesList(chatMessages = chatMessages)
         AskAnythingField(
             modifier = Modifier.align(Alignment.BottomStart),
-            onAttachClick = { attachButtonClicked = true },
+            onAttachClick = {
+                coroutineScope.launch {
+                    snackbarHostState.showSnackbar("功能暂不可用")
+                }
+            },
             onSendClick = {
                 if (chatViewModel.isGenerating.value) {
                     chatViewModel.stopGeneration()
@@ -87,6 +100,16 @@ fun HomeScreen() {
             text = text,
             onTextChange = { text = it },
             isGenerating = chatViewModel.isGenerating.value
+        )
+        // 手动放置 Snackbar Host 到任意位置
+        SnackbarHost(hostState = snackbarHostState,
+            modifier = Modifier.wrapContentSize().align(Alignment.BottomCenter).padding(bottom = 16.dp),
+            snackbar = { snackbarData -> Snackbar(snackbarData, modifier = Modifier
+                .widthIn(min = 100.dp, max = 300.dp) // 控制宽度范围
+                .heightIn(min = 40.dp, max = 120.dp) // 控制高度范围
+                .padding(8.dp),
+                shape = RoundedCornerShape(26.dp))
+            }
         )
     }
 }
