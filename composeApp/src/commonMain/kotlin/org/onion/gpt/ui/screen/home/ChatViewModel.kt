@@ -26,9 +26,24 @@ class ChatViewModel  : ViewModel() {
         if(initLLM) return
         initLLM = true
         val modelPath = "D:\\models\\llama2-7b-chat.gguf"
+        // ------------------------------------------------------------------------
+        // 作用: 在生成文本时，Top-P 采样是一种策略。它会先累加所有 token 的概率，然后将概率低于这个 minP 值的 token 截断，
+        // 之后再从剩余的 token 中按概率采样。它控制了生成文本的多样性。•说明: 如果 minP 设置为 0.9，那么只有累积概率达到 90% 的 tokens 才会被考虑采样。这可以防止模型生成低概率的、不常见的词，从而提高文本质量
+        // ------------------------------------------------------------------------
         val minP = 0.05f
+        // ------------------------------------------------------------------------
+        //  较高的 temperature 适合创意写作，较低的 temperature 适合需要准确性的任务，如代码生成
+        // ------------------------------------------------------------------------
         val temperature = 1.0f
-        val systemPrompt = "You are a helpful assistant"
+        // ------------------------------------------------------------------------
+        //  mmap 是一种高效的文件访问方式，它可以将文件映射到内存，从而减少数据复制，提高加载速度。通常建议设置为 true
+        // ------------------------------------------------------------------------
+        val useMmap = true
+        // ------------------------------------------------------------------------
+        //  mlock 可以将模型数据锁定在 RAM 中，防止被交换到硬盘，这可以进一步提高推理速度。但也可能导致内存使用过高ck
+        // ------------------------------------------------------------------------
+        val useMlock = true
+        val systemPrompt = "你是一个优秀的中英翻译大师"
         viewModelScope.launch(Dispatchers.Default) {
             // ---- read chatTemplate and contextSize ------
             llmReader = LLMReader()
@@ -36,8 +51,8 @@ class ChatViewModel  : ViewModel() {
             val contextSize = llmReader.getContextSize()
             val chatTemplate = llmReader.getChatTemplate()
             llmTalker = LLMTalker()
-            llmTalker.create(modelPath,minP,temperature,true,contextSize!!,chatTemplate!!,4,true,
-                useMlock = false
+            llmTalker.create(modelPath,minP,temperature,true,contextSize!!,chatTemplate!!,8,useMmap,
+                useMlock = useMlock
             )
             llmTalker.addSystemPrompt(systemPrompt)
         }
