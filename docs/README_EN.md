@@ -3,7 +3,7 @@
 
 ![ProjectBanner](docs/project_cover.webp)
 
-README 文件語言: [English](/docs/README_EN.md) | [中文](/README.md)
+README 文件語言: [中文](/docs/README_CHT.md) | [English](/README.md)
 
 ## 简介
 
