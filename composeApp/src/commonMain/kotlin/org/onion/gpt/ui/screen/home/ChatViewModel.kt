@@ -51,7 +51,7 @@ class ChatViewModel  : ViewModel() {
             val contextSize = llmReader.getContextSize()
             val chatTemplate = llmReader.getChatTemplate()
             llmTalker = LLMTalker()
-            llmTalker.create(modelPath,minP,temperature,true,contextSize!!,chatTemplate!!,8,useMmap,
+            llmTalker.create(modelPath,minP,temperature,true,contextSize!!,chatTemplate!!,6,useMmap,
                 useMlock = useMlock
             )
             llmTalker.addSystemPrompt(systemPrompt)

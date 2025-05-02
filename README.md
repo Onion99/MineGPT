@@ -5,21 +5,22 @@
 
 README 文件語言: [English](/docs/README_EN.md) | [中文](/README.md)
 
-## 简介
+## 📜 简介
 
 MineGPT 是一个基于Kotlin Multiplatform 开发的本地小型语言模型(SLM)对话应用
 
+![ProjectApp](docs/project_chat.webp)
 
-## 未来计划
+## 🚀未来计划
 
-- 先进一步完善Desktop的使用
-- 添加JNA来构建CMake
-- 更多平台支持
-- 多语言
-- 数据存储
-- 应用下载SLM模型(GGUF模型)
+- 🖥️ 先进一步完善Desktop的使用
+- ⚙️ 添加JNA来构建CMake
+- 🌐 更多平台支持
+- 🌍 多语言
+- 💾 数据存储
+- ⬇️ 应用下载SLM模型(GGUF模型)
 
-## 依赖组件
+## 🧩 依赖组件
 感谢以下开发者,谢谢你们的付出
 - Kotlin Multiplatform (KMP)
 - Compose Multiplatform (CMP)
@@ -33,7 +34,7 @@ MineGPT 是一个基于Kotlin Multiplatform 开发的本地小型语言模型(SL
 - Okio I/O
 - llama.cpp
 
-## 感谢
+## 🙏 感谢
 
 * [ggerganov/llama.cpp](https://github.com/ggerganov/llama.cpp) 是一个纯 C/C++ 框架，用于执行机器学习模型。它提供了一个原始的 C 样式 API 来与 LLM 交互转换为 GGML/llama.cpp 原生的 GGUF 格式
 * [shubham0204/SmolChat-Android](https://github.com/shubham0204/SmolChat-Android) 是一个Android平台上运行SLM模型的开源项目,本项目也学习于此

@@ -1,26 +1,33 @@
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.1.0-blue.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
 [![ComposeMultiplatform](https://img.shields.io/badge/Compose_Multiplatform-1.7.3-blue.svg?style=flat)](https://www.jetbrains.com/compose-multiplatform/)
 
-![ProjectBanner](docs/project_cover.webp)
+![ProjectBanner](project_cover.webp)
 
 README 文件語言: [中文](/docs/README_CHT.md) | [English](/README.md)
 
-## 简介
+## 📜 Intro
 
-MineGPT 是一个基于Kotlin Multiplatform 开发的本地小型语言模型(SLM)对话应用
+MineGPT is a lightweight local SLM (Small Language Model) chat application built with Kotlin Multiplatform. It aims to provide a cross-platform, performant, and user-friendly AI assistant experience.
 
+![ProjectApp](project_chat.webp)
 
-## 未来计划
+## 🚀 Features & Roadmap
+Planned enhancements for future releases:
 
-- 先进一步完善Desktop的使用
-- 添加JNA来构建CMake
-- 更多平台支持
-- 多语言
-- 数据存储
-- 应用下载SLM模型(GGUF模型)
+- 🖥️ Enhanced desktop support
 
-## 依赖组件
-感谢以下开发者,谢谢你们的付出
+- ⚙️ CMake integration via JNA
+
+- 🌐 Cross-platform compatibility (more targets)
+
+- 🌍 Multilingual UI and interactions
+
+- 💾 Persistent data storage
+
+- ⬇️ In-app download of SLM models (GGUF format)
+
+## 🧩 Built With
+This project wouldn’t be possible without the amazing work of the following technologies and libraries:
 - Kotlin Multiplatform (KMP)
 - Compose Multiplatform (CMP)
 - JetBrains Adaptive Layout
@@ -33,7 +40,7 @@ MineGPT 是一个基于Kotlin Multiplatform 开发的本地小型语言模型(SL
 - Okio I/O
 - llama.cpp
 
-## 感谢
+## 🙏 Acknowledgements
 
-* [ggerganov/llama.cpp](https://github.com/ggerganov/llama.cpp) 是一个纯 C/C++ 框架，用于执行机器学习模型。它提供了一个原始的 C 样式 API 来与 LLM 交互转换为 GGML/llama.cpp 原生的 GGUF 格式
-* [shubham0204/SmolChat-Android](https://github.com/shubham0204/SmolChat-Android) 是一个Android平台上运行SLM模型的开源项目,本项目也学习于此
+* [ggerganov/llama.cpp](https://github.com/ggerganov/llama.cpp) A pure C/C++ framework for running LLMs with a simple C-style API. Supports the native GGUF format for efficient inference with GGML/llama.cpp.
+* [shubham0204/SmolChat-Android](https://github.com/shubham0204/SmolChat-Android) A minimal Android application for running local SLM models. MineGPT drew valuable inspiration and ideas from this project.
