@@ -11,6 +11,13 @@ MineGPT 是一个基于Kotlin Multiplatform 开发的本地小型语言模型(SL
 
 ![ProjectApp](docs/project_chat.webp)
 
+## 💠 测试模型
+
+> 可以从这里下载 https://huggingface.co/models?library=gguf
+
+- https://huggingface.co/legraphista/Qwen2-7B-Instruct-IMat-GGUF/blob/main/Qwen2-7B-Instruct.IQ1_M.gguf
+- https://huggingface.co/unsloth/DeepSeek-R1-Distill-Qwen-1.5B-GGUF/resolve/main/DeepSeek-R1-Distill-Qwen-1.5B-Q2_K.gguf
+
 ## 🚀未来计划
 
 - 🖥️ 先进一步完善Desktop的使用
