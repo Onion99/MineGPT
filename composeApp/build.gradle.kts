@@ -80,6 +80,14 @@ kotlin {
             // ---- Network Image ------
             implementation(libs.coil.network.ktor)
             implementation(libs.coil.compose)
+            val fileKitVersion = "0.10.0-beta03"
+            implementation("io.github.vinceglb:filekit-core:${fileKitVersion}")
+            implementation("io.github.vinceglb:filekit-dialogs:${fileKitVersion}")
+            implementation("io.github.vinceglb:filekit-dialogs-compose:${fileKitVersion}")
+            implementation("io.github.vinceglb:filekit-coil:${fileKitVersion}")
+            val lottieVersion = "2.0.0-rc04"
+            implementation("io.github.alexzhirkevich:compottie:$lottieVersion")
+            implementation("io.github.alexzhirkevich:compottie-dot:$lottieVersion")
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)

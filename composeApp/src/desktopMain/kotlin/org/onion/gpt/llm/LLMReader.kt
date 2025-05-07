@@ -1,5 +1,7 @@
 package org.onion.gpt.llm
 
+import io.github.vinceglb.filekit.FileKit
+import io.github.vinceglb.filekit.dialogs.openFilePicker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -9,6 +11,10 @@ actual class LLMReader {
     }
 
     private var nativeHandle: Long = 0L
+
+    actual suspend fun getLLMFilePath(): String{
+        return FileKit.openFilePicker()?.file?.absolutePath ?: ""
+    }
 
     actual fun loadModel(modelPath: String) {
         nativeHandle = getGGUFContextNativeHandle(modelPath)

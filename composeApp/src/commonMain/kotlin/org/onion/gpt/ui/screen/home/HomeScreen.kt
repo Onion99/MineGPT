@@ -3,17 +3,7 @@ package org.onion.gpt.ui.screen.home
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -24,19 +14,11 @@ import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.AttachFile
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.KeyboardDoubleArrowDown
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Stop
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Snackbar
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -45,17 +27,28 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import io.github.alexzhirkevich.compottie.Compottie
+import io.github.alexzhirkevich.compottie.DotLottie
+import io.github.alexzhirkevich.compottie.LottieCompositionSpec
+import io.github.alexzhirkevich.compottie.rememberLottieComposition
+import io.github.alexzhirkevich.compottie.rememberLottiePainter
 import kotlinx.coroutines.launch
 import minegpt.composeapp.generated.resources.Res
-import minegpt.composeapp.generated.resources.ic_help
 import minegpt.composeapp.generated.resources.ic_avatar_sytem
 import minegpt.composeapp.generated.resources.ic_avatar_user
-import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.onion.gpt.ui.screen.home.model.ChatMessage
@@ -76,11 +69,26 @@ fun HomeScreen() {
         val keyboardController = LocalSoftwareKeyboardController.current
         val focusManager = LocalFocusManager.current
         val snackbarHostState = remember { SnackbarHostState() }
+        var showFileDialog by remember { mutableStateOf(true) }
         val coroutineScope = rememberCoroutineScope()
-
         coroutineScope.launch {
-            chatViewModel.initLLM()
+            chatViewModel.loadingLLMState.collect { state ->
+                if(state == 2) showFileDialog = false
+            }
         }
+        LLMFileSelectTipDialog(
+            showDialog = showFileDialog,
+            onDismiss = {
+                coroutineScope.launch {
+                    val file = chatViewModel.selectLLMModelFile()
+                    if(file.isBlank()){
+                        snackbarHostState.showSnackbar("请选择正确的LLM模型文件")
+                    }else {
+                        chatViewModel.initLLM()
+                    }
+                }
+            }
+        )
         ChatMessagesList(chatMessages = chatMessages)
         AskAnythingField(
             modifier = Modifier.align(Alignment.BottomStart),
@@ -473,4 +481,96 @@ private fun AiMessage(
             .padding(top = 4.dp, end = 8.dp)
             .fillMaxWidth()
     )
+}
+
+@OptIn(ExperimentalResourceApi::class)
+@Composable
+fun LLMFileSelectTipDialog(
+    showDialog: Boolean,
+    onDismiss: () -> Unit
+) {
+    if (showDialog) {
+        val chatViewModel = koinViewModel<ChatViewModel>()
+        val loadingState by chatViewModel.loadingLLMState.collectAsState(0)
+        Dialog(
+            onDismissRequest = onDismiss,
+            properties = DialogProperties(dismissOnClickOutside = true)
+        ) {
+            Card(
+                shape = RoundedCornerShape(16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White) // Use white background
+            ) {
+                Column(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    val composition by rememberLottieComposition {
+                        LottieCompositionSpec.DotLottie(
+                            Res.readBytes("files/anim_ai_file_.lottie")
+                        )
+                    }
+                    Image(
+                        painter = rememberLottiePainter(
+                            composition = composition,
+                            iterations = Compottie.IterateForever
+                        ),
+                        contentDescription = "File animation",
+                        modifier = Modifier
+                            .size(166.dp)
+                            .padding(bottom = 16.dp)
+                    )
+
+                    // Title
+                    MediumText(
+                        text = "选择你的LLM模型",
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF00BCD4), // Adjust color to match your design
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
+
+                    // Description Text
+                    /*MediumText(
+                        text = "You have become a user of the Premium Version.",
+                        fontSize = 16.sp,
+                        color = Color.Gray,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(bottom = 24.dp)
+                    )*/
+
+                    // OK Button with Gradient
+                    Button(
+                        onClick = onDismiss,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(99.dp,0.dp)
+                            .height(50.dp)
+                            .clip(RoundedCornerShape(25.dp)) // Rounded corners for the button
+                            .background(
+                                brush = Brush.horizontalGradient(
+                                    colors = listOf(
+                                        Color(0xFFFFA726),
+                                        Color(0xFF81C784)
+                                    ) // Adjust gradient colors
+                                )
+                            ),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent) // Make button background transparent
+                    ) {
+                        Text(
+                            text = if(loadingState == 1) "加载中..."  else "选择",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
+                    }
+                }
+            }
+        }
+    }
 }

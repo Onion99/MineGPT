@@ -10,6 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import org.onion.gpt.llm.LLMReader
 import org.onion.gpt.llm.LLMTalker
@@ -18,14 +19,21 @@ import kotlin.time.measureTime
 
 class ChatViewModel  : ViewModel() {
 
-    private lateinit var llmReader:LLMReader
-    private lateinit var llmTalker:LLMTalker
-
+    private var llmReader:LLMReader = LLMReader()
+    private var llmTalker:LLMTalker = LLMTalker()
+    private var modelPath = "D:\\models\\llama2-7b-chat.gguf"
     private var initLLM = false
+    // 0 default,1 loading,2 loading completely
+    var loadingLLMState = MutableStateFlow(0)
+
+    suspend fun selectLLMModelFile(): String{
+        modelPath = llmReader.getLLMFilePath()
+        return modelPath
+    }
+
     fun initLLM(){
         if(initLLM) return
         initLLM = true
-        val modelPath = "D:\\models\\llama2-7b-chat.gguf"
         // ------------------------------------------------------------------------
         // 作用: 在生成文本时，Top-P 采样是一种策略。它会先累加所有 token 的概率，然后将概率低于这个 minP 值的 token 截断，
         // 之后再从剩余的 token 中按概率采样。它控制了生成文本的多样性。•说明: 如果 minP 设置为 0.9，那么只有累积概率达到 90% 的 tokens 才会被考虑采样。这可以防止模型生成低概率的、不常见的词，从而提高文本质量
@@ -45,16 +53,16 @@ class ChatViewModel  : ViewModel() {
         val useMlock = true
         val systemPrompt = "You are a helpful assistant"
         viewModelScope.launch(Dispatchers.Default) {
+            loadingLLMState.emit(1)
             // ---- read chatTemplate and contextSize ------
-            llmReader = LLMReader()
             llmReader.loadModel(modelPath)
             val contextSize = llmReader.getContextSize()
             val chatTemplate = llmReader.getChatTemplate()
-            llmTalker = LLMTalker()
             llmTalker.create(modelPath,minP,temperature,true,contextSize!!,chatTemplate!!,6,useMmap,
                 useMlock = useMlock
             )
             llmTalker.addSystemPrompt(systemPrompt)
+            loadingLLMState.emit(2)
         }
     }
 
