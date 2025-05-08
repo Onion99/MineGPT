@@ -78,7 +78,7 @@ fun HomeScreen() {
         }
         LLMFileSelectTipDialog(
             showDialog = showFileDialog,
-            onDismiss = {
+            selectAction = {
                 coroutineScope.launch {
                     val file = chatViewModel.selectLLMModelFile()
                     if(file.isBlank()){
@@ -487,13 +487,13 @@ private fun AiMessage(
 @Composable
 fun LLMFileSelectTipDialog(
     showDialog: Boolean,
-    onDismiss: () -> Unit
+    selectAction: () -> Unit
 ) {
     if (showDialog) {
         val chatViewModel = koinViewModel<ChatViewModel>()
         val loadingState by chatViewModel.loadingLLMState.collectAsState(0)
         Dialog(
-            onDismissRequest = onDismiss,
+            onDismissRequest = {},
             properties = DialogProperties(dismissOnClickOutside = true)
         ) {
             Card(
@@ -546,7 +546,7 @@ fun LLMFileSelectTipDialog(
 
                     // OK Button with Gradient
                     Button(
-                        onClick = onDismiss,
+                        onClick = selectAction,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(99.dp,0.dp)
