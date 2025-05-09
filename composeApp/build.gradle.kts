@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
+import java.util.Locale
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -145,10 +146,111 @@ compose.desktop {
         }
     }
 }
-afterEvaluate {
-    val run = tasks.named("run")
-    // 运行 桌面程序 Debug
-    val desktopRunDebug by tasks.registering {
-        dependsOn(run)
+
+// ------------------------------------------------------------------------
+// 添加CMake 构建任务
+// CMake学习笔记 | 模块化项目管理(一) https://mp.weixin.qq.com/s/aLjOBjNmTZDJRrcJ14qKsg
+// CMake学习笔记 | 常用基础指令总结(三) https://mp.weixin.qq.com/s/-a1KeIq_6RyIl0EnM71J8w
+// CMake调用不同生成器(Unix Makefiles/Ninja)构建及编译C/C++项目(四) - https://mp.weixin.qq.com/s/9GUOKmVzfnzS9VG6DIaj1w
+// ------------------------------------------------------------------------
+val desktopPlatforms = listOf("windows", "macos", "linux")
+desktopPlatforms.forEach { platform ->
+    tasks.register("buildNativeLibFor${platform.capitalize()}") {
+        println("配置 buildNativeLibFor${platform.capitalize()} 任务")
+        
+        doFirst {
+            println("开始构建 $platform 平台的原生库")
+        }
+        // ---- Mine Window System Environment Path------
+        // Mingw64 D:\MyApp\Code\mingw64\bin
+        // CMAKE C:\Program Files\CMake\bin
+        // KDK -> D:\MyApp\Code\KDK\kotlinc\bin
+        // JAVA -> HOME C:\Users\Administrator\.jdks\corretto-17.0.11
+        doLast {
+            val cmakeGenerator = when(platform) {
+                "windows" -> "MinGW Makefiles" /*没装VisualStudio 不支持 "Visual Studio 17 2022"*/
+                "macos" -> "Xcode"
+                "linux" -> "Unix Makefiles"
+                else -> "Unix Makefiles"
+            }
+            
+            // 平台特定配置
+            val cmakeOptions = when(platform) {
+                // ---- 生成器 "MinGW Makefiles" 不支持"-A" 参数 ------
+                //"windows" -> mutableListOf("-A", "x64")
+                "macos" -> mutableListOf("-DCMAKE_OSX_ARCHITECTURES=arm64;x86_64")
+                else -> mutableListOf()
+            }
+            // 显式指定编译器 (如果它们不在 PATH 中，或者你想确保使用特定的编译器)
+            cmakeOptions.add("-DCMAKE_C_COMPILER=D:/MyApp/Code/mingw64/bin/gcc.exe")
+            cmakeOptions.add("-DCMAKE_CXX_COMPILER=D:/MyApp/Code/mingw64/bin/g++.exe")
+            // 如果 mingw32-make 也不在 PATH 中，可能还需要指定
+            // opts.add("-DCMAKE_MAKE_PROGRAM=C:/msys64/mingw64/bin/mingw32-make.exe")
+            // 检查当前平台
+            val isCurrentPlatform = when(platform) {
+                "windows" -> System.getProperty("os.name").toLowerCase().contains("windows")
+                "macos" -> System.getProperty("os.name").lowercase(Locale.getDefault()).contains("mac")
+                "linux" -> System.getProperty("os.name").toLowerCase().contains("linux")
+                else -> false
+            }
+            
+            if (isCurrentPlatform) {
+                println("正在为当前平台 $platform 构建原生库")
+                
+                exec {
+                    workingDir = file("$rootDir/cpp/gguf.cpp")
+                    val cmd = mutableListOf("cmake",  "-S", ".", "-B", "build-$platform", "-G", cmakeGenerator)
+                    cmd.addAll(cmakeOptions)
+                    commandLine(cmd)
+                }
+                
+                exec {
+                    workingDir = file("$rootDir/cpp/gguf.cpp")
+                    commandLine("cmake", "--build", "build-$platform", "--config", "Release")
+                }
+                
+                // 已经不需要复制构建结果到libs目录 ,已经在CMakeLists.txt 指定构建结果目录了
+                /*copy {
+                    from("$rootDir/cpp/gguf.cpp/build-$platform/Release")
+                    include("*.dll", "*.so", "*.dylib")
+                    into("$rootDir/cpp/libs")
+                }*/
+                
+                println("$platform 平台原生库构建完成")
+            } else {
+                println("跳过非当前平台 $platform 的构建")
+            }
+        }
     }
+}
+
+tasks.register("buildNativeLibsIfNeeded") {
+    doFirst {
+        val libFile = when {
+            System.getProperty("os.name").toLowerCase().contains("windows") -> file("${rootProject.extra["cppLibsDir"]}/libsmollm.dll")
+            System.getProperty("os.name").toLowerCase().contains("mac") -> file("${rootProject.extra["cppLibsDir"]}/libsmollm.dylib")
+            else -> file("${rootProject.extra["cppLibsDir"]}/libsmollm.so")
+        }
+        
+        if (!libFile.exists()) {
+            println("原生库不存在，开始构建...")
+            // 触发当前平台的构建任务
+            val currentPlatform = when {
+                System.getProperty("os.name").lowercase(Locale.getDefault()).contains("windows") -> "Windows"
+                System.getProperty("os.name").lowercase(Locale.getDefault()).contains("mac") -> "Macos"
+                System.getProperty("os.name").lowercase(Locale.getDefault()).contains("linux") -> "Linux"
+                else -> ""
+            }
+            if (currentPlatform.isNotEmpty()) {
+                tasks.getByName("buildNativeLibFor$currentPlatform").actions.forEach { it.execute(this) }
+            }
+        } else {
+            println("原生库已存在，跳过构建")
+        }
+    }
+}
+
+// 让desktopRun依赖这个CMake构建任务
+tasks.matching { it.name.contains("desktopRun") }.configureEach {
+    dependsOn("buildNativeLibsIfNeeded")
 }
