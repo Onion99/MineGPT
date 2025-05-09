@@ -2,12 +2,12 @@ cmake_minimum_required(VERSION 3.22.1)
 project("smollm")
 
 # 获取当前路径的上一级目录
-get_filename_component(PARENT_DIR "${CMAKE_CURRENT_SOURCE_DIR}" DIRECTORY)
+get_filename_component(CPP_ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/.." ABSOLUTE)
+string(REPLACE "\\" "/" CPP_ROOT_DIR "${CPP_ROOT_DIR}") # 规范化路径
 # 最终确定项目输出动态链接库的目录,我这里是D:\Coding\Happy\MineGPT\cpp\libs
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PARENT_DIR}/libs") # .exe and .dll
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PARENT_DIR}/libs") # .so and .dylib
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PARENT_DIR}/libs") # .lib and .a
-message(STATUS "最终生成目录: ${GRANDPARENT_DIR}")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CPP_ROOT_DIR}/libs") # .exe and .dll
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CPP_ROOT_DIR}/libs") # .so and .dylib
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CPP_ROOT_DIR}/libs") # .lib and .a
 
 # 兼容Android平台 include<jni.h> ,需找到 JDK 安装目录（你也可以写死路径）
 if(NOT DEFINED ENV{JAVA_HOME})
@@ -23,9 +23,13 @@ include_directories(${JAVA_INCLUDE_DIR} ${JAVA_INCLUDE_DIR2})
 set(LLAMA_DIR "../llama.cpp")
 set(GGML_DIR ${LLAMA_DIR}/ggml)
 set(COMMON_DIR ${LLAMA_DIR}/common)
-
-if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../../.git")
-    set(GIT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../.git")
+set(GIT_PATH_CANDIDATE "${CPP_ROOT_DIR}/../.git")
+set(ABS_LLAMA_DIR "${CPP_ROOT_DIR}/llama.cpp") # 绝对路径 D:/Coding/Happy/MineGPT/cpp/llama.cpp
+set(ABS_GGML_DIR "${ABS_LLAMA_DIR}/ggml")
+set(ABS_COMMON_DIR "${ABS_LLAMA_DIR}/common")
+message(STATUS "GIT_PATH 目录: ${GIT_PATH_CANDIDATE}")
+if(EXISTS "${GIT_PATH_CANDIDATE}")
+    set(GIT_DIR "${GIT_PATH_CANDIDATE}")
     # Is git submodule
     if(NOT IS_DIRECTORY "${GIT_DIR}")
         file(READ ${GIT_DIR} REAL_GIT_DIR_LINK)
@@ -49,13 +53,13 @@ else()
 endif()
 # Add a custom command to rebuild build-info.cpp when .git/index changes
 add_custom_command(
-        OUTPUT "${PARENT_DIR}/llama.cpp/common/build-info.cpp"
+        OUTPUT "${ABS_COMMON_DIR}/build-info.cpp"
         COMMENT "Generating build details from Git"
         COMMAND ${CMAKE_COMMAND} -DMSVC=${MSVC} -DCMAKE_C_COMPILER_VERSION=${CMAKE_C_COMPILER_VERSION}
         -DCMAKE_C_COMPILER_ID=${CMAKE_C_COMPILER_ID} -DCMAKE_VS_PLATFORM_NAME=${CMAKE_VS_PLATFORM_NAME}
-        -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -P "${PARENT_DIR}/llama.cpp/common/cmake/build-info-gen-cpp-v2.cmake"
-        WORKING_DIRECTORY "${COMMON_DIR}/.."
-        DEPENDS "${COMMON_DIR}/build-info.cpp.in" ${GIT_INDEX}
+        -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -P "${ABS_COMMON_DIR}/cmake/build-info-gen-cpp.cmake"
+        WORKING_DIRECTORY "${ABS_LLAMA_DIR}"
+        DEPENDS "${ABS_COMMON_DIR}/build-info.cpp.in" ${GIT_INDEX}
         VERBATIM
 )
 set(SMOLLM_SOURCES
