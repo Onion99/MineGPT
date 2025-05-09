@@ -182,15 +182,15 @@ desktopPlatforms.forEach { platform ->
                 else -> mutableListOf()
             }
             // 显式指定编译器 (如果它们不在 PATH 中，或者你想确保使用特定的编译器)
-            cmakeOptions.add("-DCMAKE_C_COMPILER=D:/MyApp/Code/mingw64/bin/gcc.exe")
-            cmakeOptions.add("-DCMAKE_CXX_COMPILER=D:/MyApp/Code/mingw64/bin/g++.exe")
+            // cmakeOptions.add("-DCMAKE_C_COMPILER=D:/MyApp/Code/mingw64/bin/gcc.exe")
+            // cmakeOptions.add("-DCMAKE_CXX_COMPILER=D:/MyApp/Code/mingw64/bin/g++.exe")
             // 如果 mingw32-make 也不在 PATH 中，可能还需要指定
             // opts.add("-DCMAKE_MAKE_PROGRAM=C:/msys64/mingw64/bin/mingw32-make.exe")
             // 检查当前平台
             val isCurrentPlatform = when(platform) {
-                "windows" -> System.getProperty("os.name").toLowerCase().contains("windows")
+                "windows" -> System.getProperty("os.name").lowercase(Locale.getDefault()).contains("windows")
                 "macos" -> System.getProperty("os.name").lowercase(Locale.getDefault()).contains("mac")
-                "linux" -> System.getProperty("os.name").toLowerCase().contains("linux")
+                "linux" -> System.getProperty("os.name").lowercase(Locale.getDefault()).contains("linux")
                 else -> false
             }
             
@@ -198,6 +198,7 @@ desktopPlatforms.forEach { platform ->
                 println("正在为当前平台 $platform 构建原生库")
                 
                 exec {
+                    // 这个目录可能需要调整，取决于 CMakeLists.txt 的位置
                     workingDir = file("$rootDir/cpp/gguf.cpp")
                     val cmd = mutableListOf("cmake",  "-S", ".", "-B", "build-$platform", "-G", cmakeGenerator)
                     cmd.addAll(cmakeOptions)
@@ -209,7 +210,7 @@ desktopPlatforms.forEach { platform ->
                     commandLine("cmake", "--build", "build-$platform", "--config", "Release")
                 }
                 
-                // 已经不需要复制构建结果到libs目录 ,已经在CMakeLists.txt 指定构建结果目录了
+                // 已经不需要复制构建结果到libs目录 ,已经在CMakeLists.txt 特别配置了
                 /*copy {
                     from("$rootDir/cpp/gguf.cpp/build-$platform/Release")
                     include("*.dll", "*.so", "*.dylib")
@@ -227,8 +228,8 @@ desktopPlatforms.forEach { platform ->
 tasks.register("buildNativeLibsIfNeeded") {
     doFirst {
         val libFile = when {
-            System.getProperty("os.name").toLowerCase().contains("windows") -> file("${rootProject.extra["cppLibsDir"]}/libsmollm.dll")
-            System.getProperty("os.name").toLowerCase().contains("mac") -> file("${rootProject.extra["cppLibsDir"]}/libsmollm.dylib")
+            System.getProperty("os.name").lowercase(Locale.getDefault()).contains("windows") -> file("${rootProject.extra["cppLibsDir"]}/libsmollm.dll")
+            System.getProperty("os.name").lowercase(Locale.getDefault()).contains("mac") -> file("${rootProject.extra["cppLibsDir"]}/libsmollm.dylib")
             else -> file("${rootProject.extra["cppLibsDir"]}/libsmollm.so")
         }
         
