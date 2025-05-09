@@ -18,7 +18,7 @@ MineGPT 是一个基于Kotlin Multiplatform 开发的本地小型语言模型(SL
 - https://huggingface.co/legraphista/Qwen2-7B-Instruct-IMat-GGUF/blob/main/Qwen2-7B-Instruct.IQ1_M.gguf
 - https://huggingface.co/unsloth/DeepSeek-R1-Distill-Qwen-1.5B-GGUF/resolve/main/DeepSeek-R1-Distill-Qwen-1.5B-Q2_K.gguf
 
-## Run
+## 🚀 编译
 
 1. Android Studio, 去菜单栏 **Run** > **Edit Configurations** > **New** > **Gradle**.
 2. 配置下面:
