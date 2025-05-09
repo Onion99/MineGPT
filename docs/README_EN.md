@@ -18,7 +18,7 @@ MineGPT is a lightweight local SLM (Small Language Model) chat application built
 - https://huggingface.co/legraphista/Qwen2-7B-Instruct-IMat-GGUF/blob/main/Qwen2-7B-Instruct.IQ1_M.gguf
 - https://huggingface.co/unsloth/DeepSeek-R1-Distill-Qwen-1.5B-GGUF/resolve/main/DeepSeek-R1-Distill-Qwen-1.5B-Q2_K.gguf
 
-## 🚀 编译
+## 🎮 编译
 
 1. Android Studio, go to **Run** > **Edit Configurations** > **New** > **Gradle**.
 2. Configure as follows:
