@@ -56,7 +56,14 @@ kotlin {
     }
     
     sourceSets {
-        val desktopMain by getting
+        val jvmMain by creating {
+            dependencies {
+                //implementation(fileTree(mapOf("dir" to "path/path", "include" to listOf("*.jar"))))
+            }
+        }
+        val desktopMain by getting{
+            dependsOn(jvmMain)
+        }
         
         androidMain.dependencies {
             implementation(compose.preview)
@@ -210,12 +217,12 @@ desktopPlatforms.forEach { platform ->
                     commandLine("cmake", "--build", "build-$platform", "--config", "Release")
                 }
                 
-                // 已经不需要复制构建结果到libs目录 ,已经在CMakeLists.txt 特别配置了
-                /*copy {
-                    from("$rootDir/cpp/gguf.cpp/build-$platform/Release")
-                    include("*.dll", "*.so", "*.dylib")
-                    into("$rootDir/cpp/libs")
-                }*/
+                // 迁移到JVM资源目录
+                copy {
+                    from("${rootProject.extra["cppLibsDir"]}")
+                    include("*.dll","*.dll.a", "*.so", "*.dylib")
+                    into("${rootProject.extra["jvmResourceLibDir"]}")
+                }
                 
                 println("$platform 平台原生库构建完成")
             } else {
@@ -247,6 +254,19 @@ tasks.register("buildNativeLibsIfNeeded") {
             }
         } else {
             println("原生库已存在，跳过构建")
+            val jvmLibFile = when {
+                System.getProperty("os.name").lowercase(Locale.getDefault()).contains("windows") -> file("${rootProject.extra["jvmResourceLibDir"]}/libsmollm.dll")
+                System.getProperty("os.name").lowercase(Locale.getDefault()).contains("mac") -> file("${rootProject.extra["jvmResourceLibDir"]}/libsmollm.dylib")
+                else -> file("${rootProject.extra["jvmResourceLibDir"]}/libsmollm.so")
+            }
+            if (!jvmLibFile.exists()){
+                println("原生库还没有迁移JVM资源目录,现在迁移")
+                copy {
+                    from("${rootProject.extra["cppLibsDir"]}")
+                    include("*.dll","*.dll.a", "*.so", "*.dylib")
+                    into("${rootProject.extra["jvmResourceLibDir"]}")
+                }
+            }
         }
     }
 }
@@ -255,3 +275,7 @@ tasks.register("buildNativeLibsIfNeeded") {
 tasks.matching { it.name.contains("desktopRun") }.configureEach {
     dependsOn("buildNativeLibsIfNeeded")
 }
+// ------------------------------------------------------------------------
+// 市场量化愈加激进,非强合力板块,就是围绕着补涨涨跌日周期进行,眼见为实,跌就是跌,涨就是涨
+// 你的观察经历足够多的时间了吗
+// ------------------------------------------------------------------------

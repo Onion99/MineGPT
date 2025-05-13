@@ -16,6 +16,9 @@ val cppLibsDir by extra(dirCpp.dir("libs"))
 val dirApp by extra(dirProject.dir(projects.composeApp.name))
 val dirAppSrc by extra(dirApp.dir("src"))
 val dirAppBuild by extra(dirApp.dir("build"))
-// composeApp Desktop Dir
+// Desktop Dir
 val desktopDir by extra(dirAppSrc.dir("desktopMain"))
 val desktopCurrentDir by extra(dirAppBuild.dir("desktopRun"))
+// jvmMain Dir
+val jvmDir by extra(dirAppSrc.dir("jvmMain"))
+val jvmResourceLibDir by extra("${jvmDir}/kotlin/resources/libs")
