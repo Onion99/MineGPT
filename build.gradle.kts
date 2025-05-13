@@ -21,4 +21,4 @@ val desktopDir by extra(dirAppSrc.dir("desktopMain"))
 val desktopCurrentDir by extra(dirAppBuild.dir("desktopRun"))
 // jvmMain Dir
 val jvmDir by extra(dirAppSrc.dir("jvmMain"))
-val jvmResourceLibDir by extra("${jvmDir}/kotlin/resources/libs")
+val jvmResourceLibDir by extra("${jvmDir}/resources/libs")

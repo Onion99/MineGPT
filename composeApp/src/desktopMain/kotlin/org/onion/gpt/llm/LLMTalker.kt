@@ -2,10 +2,12 @@ package org.onion.gpt.llm
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import org.onion.gpt.utils.NativeLibraryLoader
 
 actual class LLMTalker {
     init {
-        System.loadLibrary("libsmollm")
+        NativeLibraryLoader.loadFromResources("smollm")
+        //System.loadLibrary("libsmollm")
     }
     private var nativePtr = 0L
 

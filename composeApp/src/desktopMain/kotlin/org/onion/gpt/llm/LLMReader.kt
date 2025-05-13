@@ -4,10 +4,12 @@ import io.github.vinceglb.filekit.FileKit
 import io.github.vinceglb.filekit.dialogs.openFilePicker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.onion.gpt.utils.NativeLibraryLoader
 
 actual class LLMReader {
     init {
-        System.loadLibrary("libggufreader")
+        NativeLibraryLoader.loadFromResources("ggufreader")
+        //System.loadLibrary("libggufreader")
     }
 
     private var nativeHandle: Long = 0L
