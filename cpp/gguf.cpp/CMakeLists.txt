@@ -9,16 +9,52 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CPP_ROOT_DIR}/libs") # .exe and .dll
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CPP_ROOT_DIR}/libs") # .so and .dylib
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CPP_ROOT_DIR}/libs") # .lib and .a
 
-# 兼容Android平台 include<jni.h> ,需找到 JDK 安装目录（你也可以写死路径）
-if(NOT DEFINED ENV{JAVA_HOME})
-    message(FATAL_ERROR "Please set JAVA_HOME environment variable.")
+# 检查我们是否正在为 Android 构建
+if(CMAKE_SYSTEM_NAME STREQUAL "Android" OR ANDROID)
+    # 这是 Android NDK 构建
+    message(STATUS "Android NDK build detected. NDK JNI headers will be used automatically.")
+    # 对于 Android，NDK 的工具链会自动设置正确的 JNI 包含路径。
+    # 你通常不需要做任何额外的事情来包含 NDK 的 jni.h。
+    # 如果你出于某种原因确实需要显式引用 NDK 的 JNI 包含目录，
+    # 你可以使用 find_package(JNI)，它在 NDK 构建中会找到 NDK 的 JNI。
+    # find_package(JNI QUIET)
+    # if(JNI_FOUND)
+    #    message(STATUS "NDK JNI include directories: ${JNI_INCLUDE_DIRS}")
+    #    # 通常不需要显式调用 include_directories(${JNI_INCLUDE_DIRS})
+    #    # 因为 NDK 工具链已经处理了。
+    #    # target_include_directories(your_target_name PRIVATE ${JNI_INCLUDE_DIRS})
+    # endif()
+else()
+    # 这是非 Android 构建 (例如桌面 Windows, Linux, macOS)
+    message(STATUS "Host JNI build detected (Non-Android). Looking for desktop JDK JNI headers.")
+
+    if(NOT DEFINED ENV{JAVA_HOME})
+        message(FATAL_ERROR "Please set JAVA_HOME environment variable for host JNI build.")
+    endif()
+
+    set(JAVA_INCLUDE_DIR "$ENV{JAVA_HOME}/include")
+    include_directories(${JAVA_INCLUDE_DIR}) # 添加 $JAVA_HOME/include
+
+    # 为不同的桌面平台添加平台特定的 JNI 头文件目录
+    if(WIN32) # Windows (MSVC, MinGW)
+        set(JAVA_INCLUDE_DIR_PLATFORM "$ENV{JAVA_HOME}/include/win32")
+        include_directories(${JAVA_INCLUDE_DIR_PLATFORM})
+    elseif(APPLE) # macOS
+        set(JAVA_INCLUDE_DIR_PLATFORM "$ENV{JAVA_HOME}/include/darwin")
+        include_directories(${JAVA_INCLUDE_DIR_PLATFORM})
+    elseif(UNIX) # Linux 和其他 Unix-like (确保不是 APPLE 或 ANDROID)
+        set(JAVA_INCLUDE_DIR_PLATFORM "$ENV{JAVA_HOME}/include/linux") # 通常是 'linux'
+        include_directories(${JAVA_INCLUDE_DIR_PLATFORM})
+    else()
+        message(WARNING "Host JNI build: Unknown OS for platform-specific JNI headers. Only $JAVA_HOME/include added.")
+    endif()
+
+    message(STATUS "Host JNI: Added include directory: ${JAVA_INCLUDE_DIR}")
+    if(JAVA_INCLUDE_DIR_PLATFORM AND EXISTS "${JAVA_INCLUDE_DIR_PLATFORM}")
+        message(STATUS "Host JNI: Added platform-specific include directory: ${JAVA_INCLUDE_DIR_PLATFORM}")
+    endif()
+
 endif()
-
-set(JAVA_INCLUDE_DIR "$ENV{JAVA_HOME}/include")
-set(JAVA_INCLUDE_DIR2 "$ENV{JAVA_HOME}/include/win32")  # Windows平台需要包含这个额外目录
-
-include_directories(${JAVA_INCLUDE_DIR} ${JAVA_INCLUDE_DIR2})
-
 # Build
 set(LLAMA_DIR "../llama.cpp")
 set(GGML_DIR ${LLAMA_DIR}/ggml)
