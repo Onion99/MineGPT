@@ -11,6 +11,7 @@ plugins {
 val dirProject: Directory = layout.projectDirectory
 // Cpp
 val dirCpp by extra(dirProject.dir("cpp"))
+val dirCppBuildFile by extra("${dirCpp}/gguf.cpp/CMakeLists.txt")
 val cppLibsDir by extra(dirCpp.dir("libs"))
 // composeApp Dir
 val dirApp by extra(dirProject.dir(projects.composeApp.name))

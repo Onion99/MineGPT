@@ -18,7 +18,7 @@ kotlin {
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
+            jvmTarget.set(JvmTarget.JVM_17)
         }
     }
     
@@ -126,8 +126,15 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    externalNativeBuild {
+        cmake {
+            path = file("${rootProject.extra["dirCppBuildFile"]}")
+            version = "3.22.1"
+        }
     }
 }
 
@@ -188,9 +195,9 @@ desktopPlatforms.forEach { platform ->
                 "macos" -> mutableListOf("-DCMAKE_OSX_ARCHITECTURES=arm64;x86_64")
                 else -> mutableListOf()
             }
-            // 显式指定编译器 (如果它们不在 PATH 中，或者你想确保使用特定的编译器)
-            // cmakeOptions.add("-DCMAKE_C_COMPILER=D:/MyApp/Code/mingw64/bin/gcc.exe")
-            // cmakeOptions.add("-DCMAKE_CXX_COMPILER=D:/MyApp/Code/mingw64/bin/g++.exe")
+            // window 平台显式指定编译器 (如果它们不在 PATH 中，或者你想确保使用特定的编译器)
+            // cmakeOptions.add("-DCMAKE_C_COMPILER=D:/MyApp/Code/mingw64/bin/x86_64-w64-mingw32-gcc.exe")
+            // cmakeOptions.add("-DCMAKE_CXX_COMPILER=D:/MyApp/Code/mingw64/bin/x86_64-w64-mingw32-g++.exe")
             // 如果 mingw32-make 也不在 PATH 中，可能还需要指定
             // opts.add("-DCMAKE_MAKE_PROGRAM=C:/msys64/mingw64/bin/mingw32-make.exe")
             // 检查当前平台
@@ -233,6 +240,12 @@ desktopPlatforms.forEach { platform ->
 }
 
 tasks.register("buildNativeLibsIfNeeded") {
+    println("JVM Architecture: ${System.getProperty("os.arch")}") // amd64 means 64-bit, x86 means 32-bit
+    println("Java Vendor: ${System.getProperty("java.vendor")}")
+    println("Java Version: ${System.getProperty("java.version")}")
+    println("Java VM Name: ${System.getProperty("java.vm.name")}")
+    // For more detailed sun.arch.data.model (usually 32 or 64)
+    println("Sun Arch Data Model: ${System.getProperty("sun.arch.data.model")}")
     doFirst {
         val libFile = when {
             System.getProperty("os.name").lowercase(Locale.getDefault()).contains("windows") -> file("${rootProject.extra["cppLibsDir"]}/libsmollm.dll")
