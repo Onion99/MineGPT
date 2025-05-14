@@ -20,12 +20,12 @@ actual class LLMReader {
 
     actual suspend fun getLLMFilePath(): String{
         val androidFile = FileKit.openFilePicker(type = FileKitType.File(listOf("gguf")))
-        FileKit.context.contentResolver.openInputStream((androidFile?.absolutePath() ?: "").toUri()).use { inputStream ->
-            FileOutputStream(File(FileKit.context.filesDir, androidFile!!.name)).use { outputStream ->
+        FileKit.context.contentResolver.openInputStream((androidFile?.absolutePath() ?: return "").toUri()).use { inputStream ->
+            FileOutputStream(File(FileKit.context.filesDir, androidFile.name)).use { outputStream ->
                 inputStream?.copyTo(outputStream)
             }
         }
-        return File(FileKit.context.filesDir, androidFile!!.name).absolutePath
+        return File(FileKit.context.filesDir, androidFile.name).absolutePath
     }
 
     actual fun loadModel(modelPath: String) {

@@ -81,6 +81,7 @@ fun HomeScreen() {
             showDialog = showFileDialog,
             selectAction = {
                 coroutineScope.launch(Dispatchers.Default) {
+                    if(chatViewModel.loadingLLMState.value == 1) return@launch
                     val file = chatViewModel.selectLLMModelFile()
                     if(file.isBlank()){
                         chatViewModel.loadingLLMState.emit(0)
