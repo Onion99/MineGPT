@@ -44,6 +44,7 @@ import io.github.alexzhirkevich.compottie.DotLottie
 import io.github.alexzhirkevich.compottie.LottieCompositionSpec
 import io.github.alexzhirkevich.compottie.rememberLottieComposition
 import io.github.alexzhirkevich.compottie.rememberLottiePainter
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import minegpt.composeapp.generated.resources.Res
 import minegpt.composeapp.generated.resources.ic_avatar_sytem
@@ -79,9 +80,10 @@ fun HomeScreen() {
         LLMFileSelectTipDialog(
             showDialog = showFileDialog,
             selectAction = {
-                coroutineScope.launch {
+                coroutineScope.launch(Dispatchers.Default) {
                     val file = chatViewModel.selectLLMModelFile()
                     if(file.isBlank()){
+                        chatViewModel.loadingLLMState.emit(0)
                         snackbarHostState.showSnackbar("请选择正确的LLM模型文件")
                     }else {
                         chatViewModel.initLLM()
@@ -549,7 +551,7 @@ fun LLMFileSelectTipDialog(
                         onClick = selectAction,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(99.dp,0.dp)
+                            .padding(40.dp,0.dp)
                             .height(50.dp)
                             .clip(RoundedCornerShape(25.dp)) // Rounded corners for the button
                             .background(

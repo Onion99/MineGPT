@@ -27,6 +27,7 @@ class ChatViewModel  : ViewModel() {
     var loadingLLMState = MutableStateFlow(0)
 
     suspend fun selectLLMModelFile(): String{
+        loadingLLMState.emit(1)
         modelPath = llmReader.getLLMFilePath()
         return modelPath
     }
