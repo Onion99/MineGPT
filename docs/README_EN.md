@@ -18,7 +18,7 @@ MineGPT is a lightweight local SLM (Small Language Model) chat application built
 - https://huggingface.co/legraphista/Qwen2-7B-Instruct-IMat-GGUF/blob/main/Qwen2-7B-Instruct.IQ1_M.gguf
 - https://huggingface.co/unsloth/DeepSeek-R1-Distill-Qwen-1.5B-GGUF/resolve/main/DeepSeek-R1-Distill-Qwen-1.5B-Q2_K.gguf
 
-<div align="center">
+<div align="start">
   <img src="docs/shot_1.gif" height=466/>
   <img src="docs/shot_2.gif" height=466/>
 <div/>
