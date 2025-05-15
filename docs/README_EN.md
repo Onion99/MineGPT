@@ -58,6 +58,8 @@ This project wouldn’t be possible without the amazing work of the following te
 - BuildKonfig
 - Okio I/O
 - llama.cpp
+- FileKt
+- Compottie
 
 ## 🙏 Acknowledgements
 

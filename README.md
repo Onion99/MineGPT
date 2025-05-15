@@ -54,6 +54,8 @@ MineGPT 是一个基于Kotlin Multiplatform 开发的本地小型语言模型(SL
 - BuildKonfig
 - Okio I/O
 - llama.cpp
+- FileKt
+- Compottie
 
 ## 🙏 感谢
 
