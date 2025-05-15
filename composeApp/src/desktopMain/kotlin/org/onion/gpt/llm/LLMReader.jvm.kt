@@ -9,7 +9,7 @@ import org.onion.gpt.utils.NativeLibraryLoader
 actual class LLMReader {
     init {
         NativeLibraryLoader.loadFromResources("ggufreader")
-        //System.loadLibrary("libggufreader")
+        //System.loadLibrary("libggufreader") if desktopRunDebug run here
     }
 
     private var nativeHandle: Long = 0L

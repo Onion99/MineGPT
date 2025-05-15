@@ -7,7 +7,7 @@ import org.onion.gpt.utils.NativeLibraryLoader
 actual class LLMTalker {
     init {
         NativeLibraryLoader.loadFromResources("smollm")
-        //System.loadLibrary("libsmollm")
+        //System.loadLibrary("libsmollm") // if desktopRunDebug run here
     }
     private var nativePtr = 0L
 

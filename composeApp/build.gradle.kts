@@ -288,7 +288,15 @@ tasks.register("buildNativeLibsIfNeeded") {
 tasks.matching { it.name.contains("desktopRun") }.configureEach {
     dependsOn("buildNativeLibsIfNeeded")
 }
+//add RunDebug
+afterEvaluate {
+    val run = tasks.named("run")
+    // 运行 桌面程序 Debug
+    val desktopRunDebug by tasks.registering {
+        dependsOn(run)
+    }
+}
 // ------------------------------------------------------------------------
-// 市场量化愈加激进,非强合力板块,就是围绕着补涨涨跌日周期进行,眼见为实,跌就是跌,涨就是涨
-// 你的观察经历足够多的时间了吗
+// 分歧见证故事,要么导致更大的分歧,要么转向更坚定的一致,故神话在高标的分歧中诞生
+// 我从分歧中走来
 // ------------------------------------------------------------------------
