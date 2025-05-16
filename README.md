@@ -49,7 +49,6 @@ MineGPT 是一个基于Kotlin Multiplatform 开发的本地小型语言模型(SL
 - Koin
 - Ktor
 - Coil
-- BuildKonfig
 - Okio I/O
 - llama.cpp
 - FileKt
