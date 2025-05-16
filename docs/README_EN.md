@@ -7,7 +7,7 @@ README : [中文](/docs/README_CHT.md) | [English](/README.md)
 
 ## 📜 Intro
 
-MineGPT is a lightweight local SLM (Small Language Model) chat application built with Kotlin Multiplatform. It aims to provide a cross-platform, performant, and user-friendly AI assistant experience.
+MineGPT is a lightweight local SLM (Small Language Model) chat application built with Kotlin Multiplatform.
 
 ![ProjectApp](project_chat.webp)
 
@@ -26,27 +26,20 @@ MineGPT is a lightweight local SLM (Small Language Model) chat application built
 ## 🎮 Run
 
 #### Android
-Run
+Select your test equipment and Run it
 #### Desktop
 1. Android Studio, go to **Run** > **Edit Configurations** > **New** > **Gradle**.
 2. Configure as follows:
 - Run: `desktopRun -DmainClass=org.onion.gpt.MainKt --quiet`
 
 ## 🚀 Features & Roadmap
-Planned enhancements for future releases:
 
-- 🖥️ Enhanced desktop support
-
-- 🌐 Cross-platform compatibility (more targets)
-
-- 🌍 Multilingual UI and interactions
-
+- 🌐 IOS Support
+- 🌍 Multi-Language
 - 💾 Persistent data storage
 
-- ⬇️ In-app download of SLM models (GGUF format)
+## 🧩 Built With Dependence
 
-## 🧩 Built With
-This project wouldn’t be possible without the amazing work of the following technologies and libraries:
 - Kotlin Multiplatform (KMP)
 - Compose Multiplatform (CMP)
 - JetBrains Adaptive Layout

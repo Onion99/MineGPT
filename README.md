@@ -27,7 +27,7 @@ MineGPT 是一个基于Kotlin Multiplatform 开发的本地小型语言模型(SL
 ## 🎮 编译
 
 #### Android
-直接 Run
+选择你的测试设备,直接 Run
 #### Desktop
 1. Android Studio, 去菜单栏 **Run** > **Edit Configurations** > **New** > **Gradle**.
 2. 配置下面:
@@ -35,11 +35,9 @@ MineGPT 是一个基于Kotlin Multiplatform 开发的本地小型语言模型(SL
 
 ## 🚀未来计划
 
-- 🖥️ 先进一步完善Desktop的使用
-- 🌐 更多平台支持
+- 🌐 IOS支持
 - 🌍 多语言
 - 💾 数据存储
-- ⬇️ 应用下载SLM模型(GGUF模型)
 
 ## 🧩 依赖组件
 感谢以下开发者,谢谢你们的付出
