@@ -38,8 +38,8 @@ Select your test equipment and Run it
 - 🌍 Multi-Language
 - 💾 Persistent data storage
 
-## 🧩 Built With Dependence
-
+## 🧩 Library
+Thanks to all the contributors who made KMP/CMP possible!
 - Kotlin Multiplatform (KMP)
 - Compose Multiplatform (CMP)
 - JetBrains Adaptive Layout
@@ -54,7 +54,6 @@ Select your test equipment and Run it
 - FileKt
 - Compottie
 
-## 🙏 Acknowledgements
-
+## 🙏 Special Thanks
 * [ggerganov/llama.cpp](https://github.com/ggerganov/llama.cpp) A pure C/C++ framework for running LLMs with a simple C-style API. Supports the native GGUF format for efficient inference with GGML/llama.cpp.
 * [shubham0204/SmolChat-Android](https://github.com/shubham0204/SmolChat-Android) A minimal Android application for running local SLM models. MineGPT drew valuable inspiration and ideas from this project.
