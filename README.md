@@ -19,10 +19,10 @@ MineGPT 是一个基于Kotlin Multiplatform 开发的本地小型语言模型(SL
 - https://huggingface.co/unsloth/DeepSeek-R1-Distill-Qwen-1.5B-GGUF/resolve/main/DeepSeek-R1-Distill-Qwen-1.5B-Q2_K.gguf
 
 
-<div align="start">
+<div align="center">
   <img src="docs/shot_1.gif" height=466/>
   <img src="docs/shot_2.gif" height=466/>
-<div/>
+</div>
 
 ## 🎮 编译
 
