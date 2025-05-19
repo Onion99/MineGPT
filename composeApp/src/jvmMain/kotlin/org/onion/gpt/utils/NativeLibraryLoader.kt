@@ -63,7 +63,7 @@ object NativeLibraryLoader {
             if(libFileLibraryStream != null){
                 tempLibLibraryFile = File("$libFileName.a")
                 tempLibLibraryFile.deleteOnExit()
-                FileOutputStream(tempLibFile).use { outputStream ->
+                FileOutputStream(tempLibLibraryFile).use { outputStream ->
                     libFileLibraryStream.use { input ->
                         input.copyTo(outputStream)
                     }
@@ -74,6 +74,7 @@ object NativeLibraryLoader {
         } finally {
             try {
                 libFileStream.close()
+                libFileLibraryStream?.close()
             } catch (e: Exception) {
                 // Log or ignore
             }
