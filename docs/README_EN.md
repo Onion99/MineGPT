@@ -7,14 +7,13 @@ README : [中文](/docs/README_CHT.md) | [English](/README.md)
 
 ## 📜 Intro
 
-<div align="center">
+<div align="start">
     <div>
         <img src="https://img.shields.io/badge/Platform-Android-brightgreen.svg?logo=android"/>
 		<img src="https://img.shields.io/badge/Platform-macOS-white.svg?logo=apple"/>
         <img src="https://img.shields.io/badge/Platform-Windows-blue.svg?logo=esotericsoftware"/>
         <img src="https://img.shields.io/badge/Platform-Linux-red.svg?logo=linux"/>
     </div>
-    <br>
 </div>
 
 MineGPT is a lightweight local SLM (Small Language Model) chat application built with Kotlin Multiplatform.

@@ -7,16 +7,14 @@ README: [English](/docs/README_EN.md) | [中文](/README.md)
 
 ## 📜 简介
 
-<div align="center">
+<div align="start">
     <div>
         <img src="https://img.shields.io/badge/Platform-Android-brightgreen.svg?logo=android"/>
 		<img src="https://img.shields.io/badge/Platform-macOS-white.svg?logo=apple"/>
         <img src="https://img.shields.io/badge/Platform-Windows-blue.svg?logo=esotericsoftware"/>
         <img src="https://img.shields.io/badge/Platform-Linux-red.svg?logo=linux"/>
     </div>
-    <br>
 </div>
-
 
 
 MineGPT 是一个基于Kotlin Multiplatform 开发的本地小型语言模型(SLM)对话应用
