@@ -128,5 +128,6 @@ class ChatViewModel  : ViewModel() {
 
     fun stopGeneration() {
         isGenerating.value = false
+        responseGenerationJob?.cancel()
     }
 }
